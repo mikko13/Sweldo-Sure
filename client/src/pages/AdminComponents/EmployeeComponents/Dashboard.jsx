@@ -27,7 +27,7 @@ function EmployeeDashboard() {
       try {
         setLoading(true);
         const response = await axios.get(
-          "https://sweldo-sure-server.onrender.com/api/employees"
+          "https://sweldo-sure-server.onrender.com/#/api/employees"
         );
         const employeesWithId = response.data.map((employee) => ({
           ...employee,

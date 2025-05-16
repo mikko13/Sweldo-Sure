@@ -95,7 +95,7 @@ export const calculateThirteenthMonthPay = async (
 
     // Get the employee name (assuming you have an endpoint to fetch employee details)
     const employeeResponse = await axios.get(
-      `https://sweldo-sure-server.onrender.com/api/employees/${employeeId}`
+      `https://sweldo-sure-server.onrender.com/#/api/employees/${employeeId}`
     );
     const employeeName = `${employeeResponse.data.lastName}, ${employeeResponse.data.firstName}`;
 

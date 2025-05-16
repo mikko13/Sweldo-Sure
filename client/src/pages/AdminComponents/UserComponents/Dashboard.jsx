@@ -26,7 +26,7 @@ function UserDashboard() {
     async function fetchUsers() {
       try {
         setLoading(true);
-        const response = await axios.get("http://localhost:5000/api/users");
+        const response = await axios.get("https://sweldo-sure-server.onrender.com/#/api/users");
         const usersWithId = response.data.map((user) => ({
           ...user,
           id: user._id,

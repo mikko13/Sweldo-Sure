@@ -57,7 +57,7 @@ function CreatePayrollForm({ onSubmit }) {
     async function fetchEmployees() {
       try {
         const response = await axios.get(
-          "https://sweldo-sure-server.onrender.com/api/employees"
+          "https://sweldo-sure-server.onrender.com/#/api/employees"
         );
         setEmployees(response.data);
       } catch (err) {
@@ -109,7 +109,7 @@ function CreatePayrollForm({ onSubmit }) {
 
     try {
       const response = await axios.post(
-        "https://sweldo-sure-server.onrender.com/api/payrolls",
+        "https://sweldo-sure-server.onrender.com/#/api/payrolls",
         formData
       );
 

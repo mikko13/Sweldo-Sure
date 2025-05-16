@@ -14,12 +14,12 @@ function StatCards({ employees, loading }) {
     async function fetchPayrollData() {
       try {
         const response = await axios.get(
-          "https://sweldo-sure-server.onrender.com/api/payrolls"
+          "https://sweldo-sure-server.onrender.com/#/api/payrolls"
         );
         setPayrollData(response.data);
 
         const previousStats = await axios.get(
-          "https://sweldo-sure-server.onrender.com/api/stats/previous-month"
+          "https://sweldo-sure-server.onrender.com/#/api/stats/previous-month"
         );
         setPreviousMonthStats({
           employeeCount: previousStats.data.employeeCount || 0,

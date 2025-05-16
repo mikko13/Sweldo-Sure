@@ -21,7 +21,7 @@ function SystemSettingsPage() {
   async function fetchPositionsAndDepartments() {
     try {
       const positionsResponse = await axios.get(
-        "http://localhost:5000/api/system/positions",
+        "https://sweldo-sure-server.onrender.com/#/api/system/positions",
         {
           headers: {
             Authorization: "Bearer " + localStorage.getItem("token"),
@@ -30,7 +30,7 @@ function SystemSettingsPage() {
       );
 
       const departmentsResponse = await axios.get(
-        "http://localhost:5000/api/system/departments",
+        "https://sweldo-sure-server.onrender.com/#/api/system/departments",
         {
           headers: {
             Authorization: "Bearer " + localStorage.getItem("token"),
@@ -54,7 +54,7 @@ function SystemSettingsPage() {
 
     try {
       await axios.post(
-        "http://localhost:5000/api/system/positions",
+        "https://sweldo-sure-server.onrender.com/#/api/system/positions",
         { title: newPosition },
         {
           headers: {
@@ -77,7 +77,7 @@ function SystemSettingsPage() {
       if (!position) return;
 
       await axios.put(
-        "http://localhost:5000/api/system/positions/" + id,
+        "https://sweldo-sure-server.onrender.com/#/api/system/positions/" + id,
         { title, isActive: position.isActive },
         {
           headers: {
@@ -99,7 +99,7 @@ function SystemSettingsPage() {
       if (!department) return;
 
       await axios.put(
-        "http://localhost:5000/api/system/departments/" + id,
+        "https://sweldo-sure-server.onrender.com/#/api/system/departments/" + id,
         { name, isActive: department.isActive },
         {
           headers: {
@@ -118,7 +118,7 @@ function SystemSettingsPage() {
   async function handleTogglePositionStatus(id, currentStatus) {
     try {
       await axios.patch(
-        "http://localhost:5000/api/system/positions/" + id + "/toggle",
+        "https://sweldo-sure-server.onrender.com/#/api/system/positions/" + id + "/toggle",
         {},
         {
           headers: {
@@ -139,7 +139,7 @@ function SystemSettingsPage() {
   async function handleToggleDepartmentStatus(id, currentStatus) {
     try {
       await axios.patch(
-        "http://localhost:5000/api/system/departments/" + id + "/toggle",
+        "https://sweldo-sure-server.onrender.com/#/api/system/departments/" + id + "/toggle",
         {},
         {
           headers: {
@@ -165,7 +165,7 @@ function SystemSettingsPage() {
 
     try {
       await axios.post(
-        "http://localhost:5000/api/system/departments",
+        "https://sweldo-sure-server.onrender.com/#/api/system/departments",
         { name: newDepartment },
         {
           headers: {
@@ -185,7 +185,7 @@ function SystemSettingsPage() {
   async function handleDeletePosition(positionId) {
     try {
       await axios.delete(
-        "http://localhost:5000/api/system/positions/" + positionId,
+        "https://sweldo-sure-server.onrender.com/#/api/system/positions/" + positionId,
         {
           headers: {
             Authorization: "Bearer " + localStorage.getItem("token"),
@@ -203,7 +203,7 @@ function SystemSettingsPage() {
   async function handleDeleteDepartment(departmentId) {
     try {
       await axios.delete(
-        "http://localhost:5000/api/system/departments/" + departmentId,
+        "https://sweldo-sure-server.onrender.com/#/api/system/departments/" + departmentId,
         {
           headers: {
             Authorization: "Bearer " + localStorage.getItem("token"),

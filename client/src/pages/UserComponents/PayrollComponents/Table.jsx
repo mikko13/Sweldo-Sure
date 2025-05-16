@@ -119,7 +119,7 @@ function PayrollTable({
 
     try {
       await axios.delete(
-        "https://sweldo-sure-server.onrender.com/api/payrolls/" +
+        "https://sweldo-sure-server.onrender.com/#/api/payrolls/" +
           payrollToDelete._id || payrollToDelete.id
       );
 

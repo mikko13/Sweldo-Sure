@@ -49,13 +49,13 @@ function CreateEmployeeForm({ onSubmit, onCancel }) {
         setIsLoading(true);
 
         const departmentsResponse = await axios.get(
-          "https://sweldo-sure-server.onrender.com/api/system/departments"
+          "https://sweldo-sure-server.onrender.com/#/api/system/departments"
         );
         const departmentsData = departmentsResponse.data.data || [];
         setDepartments(departmentsData.filter((dept) => dept.isActive));
 
         const positionsResponse = await axios.get(
-          "https://sweldo-sure-server.onrender.com/api/system/positions"
+          "https://sweldo-sure-server.onrender.com/#/api/system/positions"
         );
         const positionsData = positionsResponse.data.data || [];
         setPositions(positionsData.filter((pos) => pos.isActive));
@@ -176,7 +176,7 @@ function CreateEmployeeForm({ onSubmit, onCancel }) {
 
     try {
       const response = await axios.post(
-        "https://sweldo-sure-server.onrender.com/api/employees",
+        "https://sweldo-sure-server.onrender.com/#/api/employees",
         formData
       );
 

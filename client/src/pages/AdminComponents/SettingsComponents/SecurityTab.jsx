@@ -107,7 +107,7 @@ function SecurityTab({ userId }) {
 
     try {
       const response = await axios.put(
-        "http://localhost:5000/api/users/" + userId + "/" + password,
+        "https://sweldo-sure-server.onrender.com/#/api/users/" + userId + "/" + password,
         {
           currentPassword: formData.currentPassword,
           newPassword: formData.newPassword,

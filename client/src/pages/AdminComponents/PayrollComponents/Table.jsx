@@ -119,8 +119,8 @@ function PayrollTable({
 
     try {
       await axios.delete(
-        "http://localhost:5000/api/payrolls/" + payrollToDelete._id ||
-          payrollToDelete.id
+        "https://sweldo-sure-server.onrender.com/#/api/payrolls/" +
+          payrollToDelete._id || payrollToDelete.id
       );
 
       const updatedPayroll = payrolls.filter(

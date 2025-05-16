@@ -72,7 +72,7 @@ function EmployeeTable({
 
     try {
       await axios.delete(
-        "https://sweldo-sure-server.onrender.com/api/employees/" +
+        "https://sweldo-sure-server.onrender.com/#/api/employees/" +
           employeeToDelete.id
       );
 

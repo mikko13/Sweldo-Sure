@@ -54,9 +54,11 @@ function CreatePayrollForm({ onSubmit }) {
   });
 
   useEffect(() => {
-    const fetchEmployees = async () => {
+    async function fetchEmployees() {
       try {
-        const response = await axios.get("http://localhost:5000/api/employees");
+        const response = await axios.get(
+          "https://sweldo-sure-server.onrender.com/#/api/employees"
+        );
         setEmployees(response.data);
       } catch (err) {
         console.error("Error fetching employees:", err);
@@ -65,12 +67,12 @@ function CreatePayrollForm({ onSubmit }) {
           description: "Please try refreshing the page.",
         });
       }
-    };
+    }
 
     fetchEmployees();
   }, []);
 
-  const handleEmployeeChange = (e) => {
+  function handleEmployeeChange(e) {
     const selectedEmployeeId = e.target.value;
     const selectedEmployee = employees.find(
       (emp) => emp._id === selectedEmployeeId
@@ -85,7 +87,7 @@ function CreatePayrollForm({ onSubmit }) {
         hourlyRate: parseFloat(selectedEmployee.rate) || 80.625,
       }));
     }
-  };
+  }
 
   function handleChange(e) {
     const { name, value } = e.target;
@@ -108,7 +110,7 @@ function CreatePayrollForm({ onSubmit }) {
 
     try {
       const response = await axios.post(
-        "http://localhost:5000/api/payrolls",
+        "https://sweldo-sure-server.onrender.com/#/api/payrolls",
         formData
       );
 

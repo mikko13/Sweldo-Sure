@@ -13,7 +13,7 @@ function ThirteenthMonthCalculator({ onCalculate, employeeData }) {
   useEffect(() => {
     async function fetchEmployees() {
       try {
-        const response = await axios.get("http://localhost:5000/api/employees");
+        const response = await axios.get("https://sweldo-sure-server.onrender.com/#/api/employees");
         setEmployees(response.data);
       } catch (error) {
         console.error("Error fetching employees:", error);
@@ -39,7 +39,7 @@ function ThirteenthMonthCalculator({ onCalculate, employeeData }) {
     setIsLoading(true);
     try {
       const response = await axios.get(
-        "http://localhost:5000/api/payrolls/thirteenth-month/" +
+        "https://sweldo-sure-server.onrender.com/#/api/payrolls/thirteenth-month/" +
           selectedEmployee +
           "/" +
           selectedYear

@@ -36,7 +36,7 @@ function UserTable({
 
   function handleViewProfilePicture(userId) {
     const imageUrl =
-      "http://localhost:5000/api/users/" +
+      "https://sweldo-sure-server.onrender.com/#/api/users/" +
         userId +
         "/" +
         "profile-picture?" +
@@ -54,7 +54,7 @@ function UserTable({
     if (!userToDelete) return;
 
     try {
-      await axios.delete("http://localhost:5000/api/users/" + userToDelete.id);
+      await axios.delete("https://sweldo-sure-server.onrender.com/#/api/users/" + userToDelete.id);
 
       const updatedUsers = users.filter((user) => user.id !== userToDelete.id);
       setUsers(updatedUsers);
@@ -82,7 +82,7 @@ function UserTable({
 
     try {
       await axios.patch(
-        "http://localhost:5000/api/users/" +
+        "https://sweldo-sure-server.onrender.com/#/api/users/" +
           userToToggleStatus.id +
           "/toggle-status"
       );
@@ -162,7 +162,7 @@ function UserTable({
                           {user.profilePicture?.hasImage ? (
                             <img
                               src={
-                                "http://localhost:5000/api/users/" +
+                                "https://sweldo-sure-server.onrender.com/#/api/users/" +
                                 user.id +
                                 "/profile-picture?" +
                                 (updatedProfilePictures[user.id] || Date.now())
