@@ -15,7 +15,9 @@ function Dashboard() {
   useEffect(() => {
     async function fetchEmployees() {
       try {
-        const response = await axios.get("http://localhost:5000/api/employees");
+        const response = await axios.get(
+          "https://sweldo-sure-server.onrender.com/api/employees"
+        );
         setEmployees(response.data);
         setLoading(false);
       } catch (error) {

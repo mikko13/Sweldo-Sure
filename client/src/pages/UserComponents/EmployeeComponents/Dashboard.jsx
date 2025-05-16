@@ -26,7 +26,7 @@ function EmployeeDashboard() {
     async function fetchEmployees() {
       try {
         setLoading(true);
-        const response = await axios.get("http://localhost:5000/api/employees");
+        const response = await axios.get("https://sweldo-sure-server.onrender.com/api/employees");
         const employeesWithId = response.data.map((employee) => ({
           ...employee,
           id: employee._id,

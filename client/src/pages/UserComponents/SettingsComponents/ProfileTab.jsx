@@ -20,7 +20,7 @@ function ProfileTab({ formData, handleChange, handleSubmit }) {
       try {
         setIsLoading(true);
         const response = await axios.get(
-          "http://localhost:5000/api/users/current",
+          "https://sweldo-sure-server.onrender.com/api/users/current",
           {
             headers: {
               Authorization: "Bearer " + localStorage.getItem("token"),
@@ -37,7 +37,7 @@ function ProfileTab({ formData, handleChange, handleSubmit }) {
         if (response.data.profilePicture?.hasImage) {
           setHasExistingImage(true);
           setPreviewUrl(
-            "http://localhost:5000/api/users/" +
+            "https://sweldo-sure-server.onrender.com/api/users/" +
               response.data._id +
               "/profile-picture?" +
               Date.now()
@@ -162,7 +162,7 @@ function ProfileTab({ formData, handleChange, handleSubmit }) {
       }
 
       const response = await axios.put(
-        "http://localhost:5000/api/users/current",
+        "https://sweldo-sure-server.onrender.com/api/users/current",
         formData,
         {
           headers: {

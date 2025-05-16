@@ -65,7 +65,9 @@ function PayrollSummaryChart() {
     async function fetchPayrollData() {
       try {
         setLoading(true);
-        const response = await axios.get("http://localhost:5000/api/payrolls");
+        const response = await axios.get(
+          "https://sweldo-sure-server.onrender.com/api/payrolls"
+        );
         const data = response.data;
 
         const periods = [...new Set(data.map((item) => item.payPeriod))].sort(

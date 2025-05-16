@@ -42,7 +42,7 @@ function ForgotPasswordComponent() {
   async function checkEmailExists(email) {
     try {
       const response = await fetch(
-        "http://localhost:5000/api/users/check-email?email=" +
+        "https://sweldo-sure-server.onrender.com/api/users/check-email?email=" +
           encodeURIComponent(email)
       );
       const data = await response.json();
@@ -67,7 +67,7 @@ function ForgotPasswordComponent() {
       }
 
       const response = await fetch(
-        "http://localhost:5000/api/users/check-email?email=" +
+        "https://sweldo-sure-server.onrender.com/api/users/check-email?email=" +
           encodeURIComponent(email)
       );
       const data = await response.json();
@@ -145,7 +145,7 @@ function ForgotPasswordComponent() {
 
     try {
       const response = await fetch(
-        "http://localhost:5000/api/users/reset-password",
+        "https://sweldo-sure-server.onrender.com/api/users/reset-password",
         {
           method: "POST",
           headers: {
@@ -186,7 +186,7 @@ function ForgotPasswordComponent() {
 
     try {
       const checkResponse = await fetch(
-        "http://localhost:5000/api/users/check-email?email=" +
+        "https://sweldo-sure-server.onrender.com/api/users/check-email?email=" +
           encodeURIComponent(email)
       );
       const checkData = await checkResponse.json();

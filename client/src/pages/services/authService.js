@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_BASE_URL = "http://localhost:5000/api/auth";
+const API_BASE_URL = "https://sweldo-sure-server.onrender.com/api/auth";
 
 function setToken(token) {
   localStorage.setItem("token", token);

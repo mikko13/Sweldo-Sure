@@ -26,7 +26,7 @@ function SettingsPage() {
     async function fetchCurrentUser() {
       try {
         const response = await axios.get(
-          "http://localhost:5000/api/users/current",
+          "https://sweldo-sure-server.onrender.com/api/users/current",
           {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -66,7 +66,7 @@ function SettingsPage() {
     e.preventDefault();
     try {
       const response = await axios.put(
-        "http://localhost:5000/api/users/current",
+        "https://sweldo-sure-server.onrender.com/api/users/current",
         formData,
         {
           headers: {

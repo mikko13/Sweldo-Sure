@@ -72,7 +72,8 @@ function EmployeeTable({
 
     try {
       await axios.delete(
-        "http://localhost:5000/api/employees/" + employeeToDelete.id
+        "https://sweldo-sure-server.onrender.com/api/employees/" +
+          employeeToDelete.id
       );
 
       const updatedEmployees = employees.filter(

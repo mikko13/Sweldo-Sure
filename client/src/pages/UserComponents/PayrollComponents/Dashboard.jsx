@@ -27,7 +27,9 @@ function PayrollDashboard() {
   useEffect(() => {
     async function fetchPayrolls() {
       try {
-        const response = await axios.get("http://localhost:5000/api/payrolls");
+        const response = await axios.get(
+          "https://sweldo-sure-server.onrender.com/api/payrolls"
+        );
         setPayrolls(response.data);
         setLoading(false);
 
@@ -224,7 +226,7 @@ function PayrollDashboard() {
             setItemsPerPage={setItemsPerPage}
             currentPage={currentPage}
             setCurrentPage={setCurrentPage}
-            selectedPayPeriod={payPeriod} 
+            selectedPayPeriod={payPeriod}
           />
         </div>
       </div>

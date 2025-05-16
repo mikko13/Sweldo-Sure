@@ -51,13 +51,13 @@ function UpdateEmployeeForm() {
         setIsLoading(true);
 
         const departmentsResponse = await axios.get(
-          "http://localhost:5000/api/system/departments"
+          "https://sweldo-sure-server.onrender.com/api/system/departments"
         );
         const departmentsData = departmentsResponse.data.data || [];
         setDepartments(departmentsData.filter((dept) => dept.isActive));
 
         const positionsResponse = await axios.get(
-          "http://localhost:5000/api/system/positions"
+          "https://sweldo-sure-server.onrender.com/api/system/positions"
         );
         const positionsData = positionsResponse.data.data || [];
         setPositions(positionsData.filter((pos) => pos.isActive));
@@ -83,7 +83,7 @@ function UpdateEmployeeForm() {
       async function fetchEmployee() {
         try {
           const response = await axios.get(
-            "http://localhost:5000/api/employees/" + id
+            "https://sweldo-sure-server.onrender.com/api/employees/" + id
           );
           setFormData(response.data);
         } catch (err) {
@@ -203,7 +203,7 @@ function UpdateEmployeeForm() {
 
     try {
       const response = await axios.put(
-        "http://localhost:5000/api/employees/" + id,
+        "https://sweldo-sure-server.onrender.com/api/employees/" + id,
         formData
       );
 

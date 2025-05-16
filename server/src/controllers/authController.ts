@@ -9,7 +9,6 @@ export const login = async (req: Request, res: Response) => {
   try {
     const { email, password } = req.body;
 
-    // Find the user by email
     const user = await UserModel.findOne({ email: email.toLowerCase() });
 
     if (!user) {
