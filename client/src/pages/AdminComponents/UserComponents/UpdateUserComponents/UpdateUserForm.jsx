@@ -66,7 +66,7 @@ function UpdateUserForm({ onSubmit, onCancel }) {
           setHasExistingImage(true);
           const userId = user.id || user._id;
           setPreviewUrl(
-            "https://sweldo-sure-server.onrender.com/#/api/users/" +
+            "https://sweldo-sure-server.onrender.com/api/users/" +
               userId +
               "/" +
               "profile-picture?" +
@@ -81,7 +81,7 @@ function UpdateUserForm({ onSubmit, onCancel }) {
         setIsLoading(true);
         try {
           const response = await axios.get(
-            "https://sweldo-sure-server.onrender.com/#/api/users/" + id
+            "https://sweldo-sure-server.onrender.com/api/users/" + id
           );
           const userData = response.data;
 
@@ -96,7 +96,7 @@ function UpdateUserForm({ onSubmit, onCancel }) {
           if (userData.profilePicture?.hasImage) {
             setHasExistingImage(true);
             setPreviewUrl(
-              "https://sweldo-sure-server.onrender.com/#/api/users/" +
+              "https://sweldo-sure-server.onrender.com/api/users/" +
                 userData._id +
                 "/" +
                 "profile-picture?" +
@@ -292,7 +292,7 @@ function UpdateUserForm({ onSubmit, onCancel }) {
 
       const userId = id || user._id || user.id;
       const response = await axios.put(
-        "https://sweldo-sure-server.onrender.com/#/api/users/" + userId,
+        "https://sweldo-sure-server.onrender.com/api/users/" + userId,
         submitData,
         {
           headers: {

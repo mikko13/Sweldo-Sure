@@ -32,37 +32,66 @@ var __importStar = (this && this.__importStar) || (function () {
         return result;
     };
 })();
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = __importStar(require("mongoose"));
-const EmployeeSchema = new mongoose_1.Schema({
-    lastName: { type: String, required: true },
-    firstName: { type: String, required: true },
-    middleName: { type: String },
-    gender: {
+const bcrypt_1 = __importDefault(require("bcrypt"));
+const UserSchema = new mongoose_1.Schema({
+    firstName: {
         type: String,
-        required: true,
+        required: [true, "First name is required"],
+        trim: true,
     },
-    position: { type: String, required: true },
-    department: { type: String, required: true },
-    dateStarted: { type: String, required: true },
-    rate: { type: String, required: true },
-    civilStatus: {
+    lastName: {
         type: String,
-        required: true,
+        required: [true, "Last name is required"],
+        trim: true,
     },
-    birthDate: { type: String, required: true },
-    sss: { type: String },
-    hdmf: { type: String },
-    philhealth: { type: String },
-    tin: { type: String },
-    emailAddress: { type: String, required: true },
-    permanentAddress: { type: String, required: true },
-    contactNumber: { type: String, required: true },
-    status: {
+    email: {
         type: String,
-        required: true,
+        required: [true, "Email is required"],
+        unique: true,
+        trim: true,
+        lowercase: true,
+        match: [/^[^\s@]+@[^\s@]+\.[^\s@]+$/, "Please provide a valid email"],
     },
-    remarks: { type: String },
-}, { timestamps: true });
-const EmployeeModel = mongoose_1.default.model("Employee", EmployeeSchema);
-exports.default = EmployeeModel;
+    password: {
+        type: String,
+        required: [true, "Password is required"],
+        minlength: 6,
+    },
+    role: {
+        type: String,
+        enum: ["user", "admin"],
+        default: "user",
+    },
+    profilePicture: {
+        data: Buffer,
+        contentType: String,
+    },
+    isActive: {
+        type: Boolean,
+        default: false,
+    },
+}, {
+    timestamps: true,
+});
+UserSchema.pre("save", async function (next) {
+    if (!this.isModified("password"))
+        return next();
+    try {
+        const salt = await bcrypt_1.default.genSalt(10);
+        this.password = await bcrypt_1.default.hash(this.password, salt);
+        next();
+    }
+    catch (error) {
+        next(error);
+    }
+});
+UserSchema.methods.comparePassword = async function (candidatePassword) {
+    return bcrypt_1.default.compare(candidatePassword, this.password);
+};
+const UserModel = mongoose_1.default.model("User", UserSchema);
+exports.default = UserModel;

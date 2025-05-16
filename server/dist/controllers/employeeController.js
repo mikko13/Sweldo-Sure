@@ -5,7 +5,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteEmployee = exports.updateEmployee = exports.createEmployee = exports.getEmployeeById = exports.getAllEmployees = void 0;
 const Employee_1 = __importDefault(require("../models/Employee"));
-// Get all employees
 const getAllEmployees = async (req, res) => {
     try {
         const employees = await Employee_1.default.find().sort({ createdAt: -1 });
@@ -17,7 +16,6 @@ const getAllEmployees = async (req, res) => {
     }
 };
 exports.getAllEmployees = getAllEmployees;
-// Get employee by ID
 const getEmployeeById = async (req, res) => {
     try {
         const employee = await Employee_1.default.findById(req.params.id);
@@ -32,7 +30,6 @@ const getEmployeeById = async (req, res) => {
     }
 };
 exports.getEmployeeById = getEmployeeById;
-// Create new employee
 const createEmployee = async (req, res) => {
     try {
         const newEmployee = new Employee_1.default(req.body);
@@ -48,7 +45,6 @@ const createEmployee = async (req, res) => {
     }
 };
 exports.createEmployee = createEmployee;
-// Update employee
 const updateEmployee = async (req, res) => {
     try {
         const updatedEmployee = await Employee_1.default.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true });
@@ -66,7 +62,6 @@ const updateEmployee = async (req, res) => {
     }
 };
 exports.updateEmployee = updateEmployee;
-// Delete employee
 const deleteEmployee = async (req, res) => {
     try {
         const deletedEmployee = await Employee_1.default.findByIdAndDelete(req.params.id);

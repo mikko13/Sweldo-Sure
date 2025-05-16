@@ -69,7 +69,7 @@ function UserAvatar() {
         ) : (
           <img
             src={
-              "https://sweldo-sure-server.onrender.com/#/api/users/" +
+              "https://sweldo-sure-server.onrender.com/api/users/" +
               userId +
               "/profile-picture?" +
               imageVersion

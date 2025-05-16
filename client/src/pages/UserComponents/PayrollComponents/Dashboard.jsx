@@ -28,7 +28,7 @@ function PayrollDashboard() {
     async function fetchPayrolls() {
       try {
         const response = await axios.get(
-          "https://sweldo-sure-server.onrender.com/#/api/payrolls"
+          "https://sweldo-sure-server.onrender.com/api/payrolls"
         );
         setPayrolls(response.data);
         setLoading(false);

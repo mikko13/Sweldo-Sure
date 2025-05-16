@@ -66,7 +66,7 @@ function PayrollSummaryChart() {
       try {
         setLoading(true);
         const response = await axios.get(
-          "https://sweldo-sure-server.onrender.com/#/api/payrolls"
+          "https://sweldo-sure-server.onrender.com/api/payrolls"
         );
         const data = response.data;
 

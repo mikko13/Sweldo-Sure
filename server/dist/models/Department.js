@@ -33,36 +33,20 @@ var __importStar = (this && this.__importStar) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
+// src/models/Department.ts
 const mongoose_1 = __importStar(require("mongoose"));
-const EmployeeSchema = new mongoose_1.Schema({
-    lastName: { type: String, required: true },
-    firstName: { type: String, required: true },
-    middleName: { type: String },
-    gender: {
+const DepartmentSchema = new mongoose_1.Schema({
+    name: {
         type: String,
         required: true,
+        trim: true,
+        unique: true,
     },
-    position: { type: String, required: true },
-    department: { type: String, required: true },
-    dateStarted: { type: String, required: true },
-    rate: { type: String, required: true },
-    civilStatus: {
-        type: String,
-        required: true,
+    isActive: {
+        type: Boolean,
+        default: true,
     },
-    birthDate: { type: String, required: true },
-    sss: { type: String },
-    hdmf: { type: String },
-    philhealth: { type: String },
-    tin: { type: String },
-    emailAddress: { type: String, required: true },
-    permanentAddress: { type: String, required: true },
-    contactNumber: { type: String, required: true },
-    status: {
-        type: String,
-        required: true,
-    },
-    remarks: { type: String },
-}, { timestamps: true });
-const EmployeeModel = mongoose_1.default.model("Employee", EmployeeSchema);
-exports.default = EmployeeModel;
+}, {
+    timestamps: true,
+});
+exports.default = mongoose_1.default.model("Department", DepartmentSchema);

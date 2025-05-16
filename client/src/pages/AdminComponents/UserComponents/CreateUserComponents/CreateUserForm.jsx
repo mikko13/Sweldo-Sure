@@ -187,7 +187,7 @@ function CreateUserForm({ onSubmit, onCancel }) {
       }
 
       const response = await axios.post(
-        "https://sweldo-sure-server.onrender.com/#/api/users",
+        "https://sweldo-sure-server.onrender.com/api/users",
         submitData,
         {
           headers: {
