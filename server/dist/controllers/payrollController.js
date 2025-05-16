@@ -73,7 +73,7 @@ const calculateThirteenthMonthPay = async (req, res) => {
     try {
         const { employeeId, year } = req.params;
         // Get the employee name (assuming you have an endpoint to fetch employee details)
-        const employeeResponse = await axios_1.default.get(`https://sweldo-sure-server.onrender.com/#/api/employees/${employeeId}`);
+        const employeeResponse = await axios_1.default.get(`https://sweldo-sure-server.onrender.com/api/employees/${employeeId}`);
         const employeeName = `${employeeResponse.data.lastName}, ${employeeResponse.data.firstName}`;
         // Fetch all payroll records for this employee in the specified year
         const payrolls = await Payroll_1.default.find({
