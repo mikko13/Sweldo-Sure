@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { HashRouter as Router, Routes, Route } from "react-router-dom";
 import PayrollDashboard from "./pages/UserComponents/PayrollComponents/Dashboard";
 import LoginPage from "./pages/LoginComponents/LoginComponent";
 import HomeDashboard from "./pages/UserComponents/DashboardComponents/Dashboard";
@@ -102,7 +102,10 @@ function App() {
           />
 
           <Route path="/admin-settings" element={<AdminSettings />} />
-          <Route path="/admin-system-settings" element={<AdminSystemSettings />} />
+          <Route
+            path="/admin-system-settings"
+            element={<AdminSystemSettings />}
+          />
         </Route>
       </Routes>
     </Router>
