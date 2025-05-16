@@ -101,7 +101,7 @@ function LoginForm({
               </label>
             </div>
             <a
-              href="/ForgotPassword"
+              href="#/ForgotPassword"
               className="text-xs sm:text-sm text-blue-600 hover:text-blue-800 transition-colors"
             >
               Forgot password?
