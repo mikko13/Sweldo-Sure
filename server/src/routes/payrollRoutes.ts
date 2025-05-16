@@ -11,15 +11,12 @@ const router = express.Router();
 
 router.get("/", getAllPayrolls);
 
+router.get("/thirteenth-month/:employeeId/:year", calculateThirteenthMonthPay);
+
 router.get("/:id", getPayrollById);
 
 router.post("/", createPayroll);
-
 router.put("/:id", updatePayroll);
-
 router.delete("/:id", deletePayroll);
-
-router.get("/thirteenth-month/:employeeId/:year", calculateThirteenthMonthPay);
-
 
 export default router;
