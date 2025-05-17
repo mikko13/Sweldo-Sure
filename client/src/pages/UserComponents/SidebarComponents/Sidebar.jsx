@@ -9,7 +9,7 @@ import {
   ChevronRight,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import authService from "../../services/authService";
+import authService from "@/pages/services/authService";
 
 function Sidebar({
   sidebarOpen,
