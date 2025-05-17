@@ -163,18 +163,6 @@ function LoginComponent() {
             errorMessage={errorMessage}
             handleLogin={handleLogin}
           />
-
-          <div className="mt-4 sm:mt-6 text-center">
-            <p className="text-xs sm:text-sm text-gray-600">
-              Don't have an account?{" "}
-              <a
-                href="#"
-                className="text-blue-600 hover:text-blue-800 font-medium"
-              >
-                Contact your administrator
-              </a>
-            </p>
-          </div>
         </div>
       </div>
     </div>
