@@ -14,7 +14,6 @@ import axios from "axios";
 
 function SecurityTab({ userId }) {
   const [formData, setFormData] = useState({
-    currentPassword: "",
     newPassword: "",
     confirmPassword: "",
   });
@@ -78,10 +77,6 @@ function SecurityTab({ userId }) {
   function validateForm() {
     const newErrors = {};
 
-    if (!formData.currentPassword) {
-      newErrors.currentPassword = "Current password is required";
-    }
-
     if (!formData.newPassword) {
       newErrors.newPassword = "New password is required";
     } else if (formData.newPassword.length < 6) {
@@ -107,10 +102,10 @@ function SecurityTab({ userId }) {
 
     try {
       const response = await axios.put(
-        "https://sweldo-sure-server.onrender.com/api/users/" + userId + "/" + password,
+        "https://sweldo-sure-server.onrender.com/api/users/current",
         {
           currentPassword: formData.currentPassword,
-          newPassword: formData.newPassword,
+          password: formData.newPassword,
         },
         {
           headers: {
@@ -131,31 +126,6 @@ function SecurityTab({ userId }) {
       });
     } catch (error) {
       console.error("Error updating password:", error);
-
-      if (axios.isAxiosError(error) && error.response) {
-        if (error.response.status === 401) {
-          setErrors((prev) => ({
-            ...prev,
-            currentPassword: "Current password is incorrect",
-          }));
-          toast.error("Authentication Error", {
-            description: "Current password is incorrect",
-            duration: 4000,
-          });
-        } else {
-          toast.error("Failed to update password", {
-            description: error.response.data.message || "An error occurred",
-            duration: 4000,
-          });
-        }
-      } else {
-        toast.error("Update Failed", {
-          description: "An unexpected error occurred",
-          duration: 4000,
-        });
-      }
-    } finally {
-      setIsSubmitting(false);
     }
   }
 
@@ -190,26 +160,6 @@ function SecurityTab({ userId }) {
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-4">
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Current Password
-          </label>
-          <input
-            type="password"
-            name="currentPassword"
-            value={formData.currentPassword}
-            onChange={handleChange}
-            className={`w-full px-3 py-2 border ${
-              errors.currentPassword ? "border-red-500" : "border-blue-200"
-            } rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-800`}
-          />
-          {errors.currentPassword && (
-            <p className="text-sm text-red-600 mt-1">
-              {errors.currentPassword}
-            </p>
-          )}
-        </div>
-
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">
             New Password

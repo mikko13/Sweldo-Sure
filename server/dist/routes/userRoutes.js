@@ -10,6 +10,7 @@ const authMiddleware_1 = require("../middleware/authMiddleware");
 const router = express_1.default.Router();
 router.get("/current", authMiddleware_1.authenticateUser, userController_1.getCurrentUser);
 router.put("/current", authMiddleware_1.authenticateUser, upload_1.default.single("profilePicture"), userController_1.updateCurrentUser);
+router.put("/:id/password", authMiddleware_1.authenticateUser, userController_1.updateUserPassword);
 router.get("/check-email", userController_1.checkEmailExists);
 router.get("/", userController_1.getAllUsers);
 router.get("/:id", userController_1.getUserById);

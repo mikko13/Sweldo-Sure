@@ -3,11 +3,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateCurrentUser = void 0;
 exports.getUserByEmail = getUserByEmail;
 exports.checkEmailExists = checkEmailExists;
 exports.resetPassword = resetPassword;
 exports.getCurrentUser = getCurrentUser;
+exports.updateCurrentUser = updateCurrentUser;
 exports.updateUser = updateUser;
 exports.toggleUserActiveStatus = toggleUserActiveStatus;
 exports.getAllUsers = getAllUsers;
@@ -156,7 +156,7 @@ async function getCurrentUser(req, res) {
         res.status(500).json({ message: "Server error" });
     }
 }
-const updateCurrentUser = async (req, res) => {
+async function updateCurrentUser(req, res) {
     try {
         const userId = req.user?.id;
         if (!userId) {
@@ -166,14 +166,35 @@ const updateCurrentUser = async (req, res) => {
         if (!user) {
             return res.status(404).json({ message: "User not found" });
         }
+        if (req.body.password && req.body.currentPassword) {
+            const isPasswordValid = await user.comparePassword(req.body.currentPassword);
+            if (!isPasswordValid) {
+                return res.status(401).json({
+                    success: false,
+                    message: "Current password is incorrect"
+                });
+            }
+            if (req.body.password.length < 6) {
+                return res.status(400).json({
+                    success: false,
+                    message: "New password must be at least 6 characters long"
+                });
+            }
+            user.password = req.body.password;
+        }
+        else if (req.body.password) {
+            // Don't allow password update without current password verification
+            return res.status(400).json({
+                success: false,
+                message: "Current password is required to update password"
+            });
+        }
         if (req.body.firstName)
             user.firstName = req.body.firstName;
         if (req.body.lastName)
             user.lastName = req.body.lastName;
         if (req.body.email)
             user.email = req.body.email;
-        if (req.body.password)
-            user.password = req.body.password;
         if (req.file) {
             user.profilePicture = {
                 data: req.file.buffer,
@@ -184,17 +205,28 @@ const updateCurrentUser = async (req, res) => {
             user.profilePicture = undefined;
         }
         const updatedUser = await user.save();
-        res.status(200).json({
+        return res.status(200).json({
+            success: true,
             message: "Profile updated successfully",
-            user: userToResponse(updatedUser),
+            user: {
+                _id: updatedUser._id,
+                firstName: updatedUser.firstName,
+                lastName: updatedUser.lastName,
+                email: updatedUser.email,
+                role: updatedUser.role,
+                isActive: updatedUser.isActive,
+            }
         });
     }
     catch (error) {
         console.error("Error updating profile:", error);
-        res.status(400).json({ message: "Failed to update profile", error });
+        return res.status(400).json({
+            success: false,
+            message: "Failed to update profile",
+            error: error instanceof Error ? error.message : error
+        });
     }
-};
-exports.updateCurrentUser = updateCurrentUser;
+}
 async function updateUser(req, res) {
     try {
         const user = await User_1.default.findById(req.params.id);
@@ -325,21 +357,46 @@ async function updateUserPassword(req, res) {
     try {
         const { currentPassword, newPassword } = req.body;
         const userId = req.params.id;
+        if (!currentPassword || !newPassword) {
+            return res.status(400).json({
+                success: false,
+                message: "Current password and new password are required",
+            });
+        }
+        if (newPassword.length < 6) {
+            return res.status(400).json({
+                success: false,
+                message: "New password must be at least 6 characters long",
+            });
+        }
         const user = await User_1.default.findById(userId);
         if (!user) {
-            return res.status(404).json({ message: "User not found" });
+            return res.status(404).json({
+                success: false,
+                message: "User not found",
+            });
         }
         const isPasswordValid = await user.comparePassword(currentPassword);
         if (!isPasswordValid) {
-            return res.status(401).json({ message: "Current password is incorrect" });
+            return res.status(401).json({
+                success: false,
+                message: "Current password is incorrect",
+            });
         }
         user.password = newPassword;
         await user.save();
-        res.status(200).json({ message: "Password updated successfully" });
+        return res.status(200).json({
+            success: true,
+            message: "Password updated successfully",
+        });
     }
     catch (error) {
         console.error("Error updating password:", error);
-        res.status(500).json({ message: "Failed to update password", error });
+        return res.status(500).json({
+            success: false,
+            message: "Failed to update password",
+            error: error instanceof Error ? error.message : error,
+        });
     }
 }
 async function getUserProfilePicture(req, res) {

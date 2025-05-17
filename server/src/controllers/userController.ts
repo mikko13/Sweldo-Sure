@@ -163,10 +163,10 @@ export async function getCurrentUser(req: Request, res: Response) {
   }
 }
 
-export const updateCurrentUser = async (
-  req: Request & { file?: Express.Multer.File },
+export async function updateCurrentUser(
+  req: Request & { file?: Express.Multer.File, user?: { id: string } },
   res: Response
-) => {
+) {
   try {
     const userId = req.user?.id;
     if (!userId) {
@@ -178,10 +178,34 @@ export const updateCurrentUser = async (
       return res.status(404).json({ message: "User not found" });
     }
 
+    if (req.body.password && req.body.currentPassword) {
+      const isPasswordValid = await user.comparePassword(req.body.currentPassword);
+      if (!isPasswordValid) {
+        return res.status(401).json({
+          success: false,
+          message: "Current password is incorrect"
+        });
+      }
+      
+      if (req.body.password.length < 6) {
+        return res.status(400).json({
+          success: false,
+          message: "New password must be at least 6 characters long"
+        });
+      }
+      
+      user.password = req.body.password;
+    } else if (req.body.password) {
+      // Don't allow password update without current password verification
+      return res.status(400).json({
+        success: false,
+        message: "Current password is required to update password"
+      });
+    }
+
     if (req.body.firstName) user.firstName = req.body.firstName;
     if (req.body.lastName) user.lastName = req.body.lastName;
     if (req.body.email) user.email = req.body.email;
-    if (req.body.password) user.password = req.body.password;
 
     if (req.file) {
       user.profilePicture = {
@@ -194,15 +218,27 @@ export const updateCurrentUser = async (
 
     const updatedUser = await user.save();
 
-    res.status(200).json({
+    return res.status(200).json({
+      success: true,
       message: "Profile updated successfully",
-      user: userToResponse(updatedUser),
+      user: {
+        _id: updatedUser._id,
+        firstName: updatedUser.firstName,
+        lastName: updatedUser.lastName,
+        email: updatedUser.email,
+        role: updatedUser.role,
+        isActive: updatedUser.isActive,
+      }
     });
   } catch (error) {
     console.error("Error updating profile:", error);
-    res.status(400).json({ message: "Failed to update profile", error });
+    return res.status(400).json({ 
+      success: false,
+      message: "Failed to update profile", 
+      error: error instanceof Error ? error.message : error 
+    });
   }
-};
+}
 
 export async function updateUser(
   req: Request & { file?: Express.Multer.File },
@@ -358,23 +394,50 @@ export async function updateUserPassword(req: Request, res: Response) {
     const { currentPassword, newPassword } = req.body;
     const userId = req.params.id;
 
+    if (!currentPassword || !newPassword) {
+      return res.status(400).json({
+        success: false,
+        message: "Current password and new password are required",
+      });
+    }
+
+    if (newPassword.length < 6) {
+      return res.status(400).json({
+        success: false,
+        message: "New password must be at least 6 characters long",
+      });
+    }
+
     const user = await UserModel.findById(userId);
     if (!user) {
-      return res.status(404).json({ message: "User not found" });
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
     }
 
     const isPasswordValid = await user.comparePassword(currentPassword);
     if (!isPasswordValid) {
-      return res.status(401).json({ message: "Current password is incorrect" });
+      return res.status(401).json({
+        success: false,
+        message: "Current password is incorrect",
+      });
     }
 
     user.password = newPassword;
     await user.save();
 
-    res.status(200).json({ message: "Password updated successfully" });
+    return res.status(200).json({
+      success: true,
+      message: "Password updated successfully",
+    });
   } catch (error) {
     console.error("Error updating password:", error);
-    res.status(500).json({ message: "Failed to update password", error });
+    return res.status(500).json({
+      success: false,
+      message: "Failed to update password",
+      error: error instanceof Error ? error.message : error,
+    });
   }
 }
 

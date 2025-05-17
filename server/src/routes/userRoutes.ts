@@ -12,6 +12,7 @@ import {
   checkEmailExists,
   resetPassword,
   getUserByEmail,
+  updateUserPassword,
 } from "../controllers/userController";
 import upload from "../middleware/upload";
 import { authenticateUser } from "../middleware/authMiddleware";
@@ -25,7 +26,7 @@ router.put(
   upload.single("profilePicture"),
   updateCurrentUser
 );
-
+router.put("/:id/password", authenticateUser, updateUserPassword);
 router.get("/check-email", checkEmailExists);
 router.get("/", getAllUsers);
 router.get("/:id", getUserById);
