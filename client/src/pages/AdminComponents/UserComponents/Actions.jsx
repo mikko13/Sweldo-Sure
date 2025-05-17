@@ -153,13 +153,6 @@ function UserActions({
               transitionDelay: "400ms",
             }}
           >
-            <button
-              onClick={() => setFilterDropdownOpen(!filterDropdownOpen)}
-              className="p-2 rounded-md bg-white hover:bg-blue-50 border border-blue-200 flex items-center transition-all duration-200"
-            >
-              <Filter size={16} className="text-gray-400 mr-1" />
-              <ChevronDown size={14} className="text-gray-400" />
-            </button>
           </div>
         </div>
       </div>
@@ -198,13 +191,6 @@ function UserActions({
                 transitionDelay: "400ms",
               }}
             >
-              <button
-                onClick={() => setFilterDropdownOpen(!filterDropdownOpen)}
-                className="p-2 rounded-md bg-white hover:bg-blue-50 border border-blue-200 flex items-center transition-all duration-200"
-              >
-                <Filter size={16} className="text-gray-400 mr-1" />
-                <ChevronDown size={14} className="text-gray-400" />
-              </button>
             </div>
             <button
               onClick={() => setMobileActionsOpen(!mobileActionsOpen)}
