@@ -19,15 +19,40 @@ function PayrollDashboard() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [isPageLoaded, setIsPageLoaded] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
 
   const filteredPayrolls = useMemo(() => {
-    return payrolls.filter((payroll) => payroll.payPeriod === payPeriod);
-  }, [payrolls, payPeriod]);
+    let filtered = payrolls;
+
+    if (payPeriod !== "All Pay Periods") {
+      filtered = filtered.filter((payroll) => payroll.payPeriod === payPeriod);
+    }
+
+    if (searchTerm.trim()) {
+      const lowerCaseSearch = searchTerm.toLowerCase();
+      filtered = filtered.filter((payroll) => {
+        return (
+          // Search in common text fields
+          payroll.name?.toLowerCase().includes(lowerCaseSearch) ||
+          payroll.payPeriod?.toLowerCase().includes(lowerCaseSearch) ||
+          payroll.status?.toLowerCase().includes(lowerCaseSearch) ||
+          // Search in numeric fields (convert to string first)
+          String(payroll.netPay).includes(searchTerm) ||
+          String(payroll.totalAmount).includes(searchTerm) ||
+          String(payroll.totalRegularWage).includes(searchTerm)
+        );
+      });
+    }
+
+    return filtered;
+  }, [payrolls, payPeriod, searchTerm]);
 
   useEffect(() => {
     async function fetchPayrolls() {
       try {
-        const response = await axios.get("https://sweldo-sure-server.onrender.com/api/payrolls");
+        const response = await axios.get(
+          "https://sweldo-sure-server.onrender.com/api/payrolls"
+        );
         setPayrolls(response.data);
         setLoading(false);
 
@@ -65,7 +90,11 @@ function PayrollDashboard() {
 
   useEffect(() => {
     setCurrentPage(1);
-  }, [payPeriod]);
+  }, [payPeriod, searchTerm]);
+
+  function handleSearch(term) {
+    setSearchTerm(term);
+  }
 
   function handleCheckboxChange(id) {
     setPayrolls(
@@ -208,6 +237,7 @@ function PayrollDashboard() {
           />
           <ActionsComponent
             payrolls={filteredPayrolls}
+            onSearch={handleSearch}
             displayedPayrolls={filteredPayrolls.slice(
               (currentPage - 1) * itemsPerPage,
               currentPage * itemsPerPage
@@ -224,6 +254,7 @@ function PayrollDashboard() {
             currentPage={currentPage}
             setCurrentPage={setCurrentPage}
             selectedPayPeriod={payPeriod}
+            searchTerm={searchTerm}
           />
         </div>
       </div>

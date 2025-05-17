@@ -1,4 +1,3 @@
-// src/models/Department.ts
 import mongoose, { Document, Schema } from "mongoose";
 
 export interface IDepartment extends Document {

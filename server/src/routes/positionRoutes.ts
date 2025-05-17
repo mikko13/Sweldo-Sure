@@ -1,4 +1,3 @@
-// src/routes/positionRoutes.ts
 import express from "express";
 import {
   getAllPositions,

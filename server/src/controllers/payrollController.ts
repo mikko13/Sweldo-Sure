@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import PayrollModel from "../models/Payroll";
 import axios from "axios";
 
-export const getAllPayrolls = async (req: Request, res: Response) => {
+export async function getAllPayrolls(req: Request, res: Response) {
   try {
     const payrolls = await PayrollModel.find().sort({ createdAt: -1 });
     res.status(200).json(payrolls);
@@ -10,9 +10,9 @@ export const getAllPayrolls = async (req: Request, res: Response) => {
     console.error("Error fetching payrolls:", error);
     res.status(500).json({ message: "Failed to fetch payrolls", error });
   }
-};
+}
 
-export const getPayrollById = async (req: Request, res: Response) => {
+export async function getPayrollById(req: Request, res: Response) {
   try {
     const payroll = await PayrollModel.findById(req.params.id);
 
@@ -25,9 +25,9 @@ export const getPayrollById = async (req: Request, res: Response) => {
     console.error("Error fetching payroll:", error);
     res.status(500).json({ message: "Failed to fetch payroll", error });
   }
-};
+}
 
-export const createPayroll = async (req: Request, res: Response) => {
+export async function createPayroll(req: Request, res: Response) {
   try {
     const totalRegularWage = Number(
       (
@@ -84,22 +84,17 @@ export const createPayroll = async (req: Request, res: Response) => {
     console.error("Error creating payroll:", error);
     res.status(400).json({ message: "Failed to create payroll", error });
   }
-};
+}
 
-export const calculateThirteenthMonthPay = async (
-  req: Request,
-  res: Response
-) => {
+export async function calculateThirteenthMonthPay(req: Request, res: Response) {
   try {
     const { employeeId, year } = req.params;
 
-    // Get the employee name (assuming you have an endpoint to fetch employee details)
     const employeeResponse = await axios.get(
       `https://sweldo-sure-server.onrender.com/api/employees/${employeeId}`
     );
     const employeeName = `${employeeResponse.data.lastName}, ${employeeResponse.data.firstName}`;
 
-    // Fetch all payroll records for this employee in the specified year
     const payrolls = await PayrollModel.find({
       name: employeeName,
       payPeriod: { $regex: year },
@@ -133,9 +128,9 @@ export const calculateThirteenthMonthPay = async (
       message: "Failed to calculate 13th month pay",
     });
   }
-};
+}
 
-export const updatePayroll = async (req: Request, res: Response) => {
+export async function updatePayroll(req: Request, res: Response) {
   try {
     const totalRegularWage = Number(
       (
@@ -199,9 +194,9 @@ export const updatePayroll = async (req: Request, res: Response) => {
     console.error("Error updating payroll:", error);
     res.status(400).json({ message: "Failed to update payroll", error });
   }
-};
+}
 
-export const deletePayroll = async (req: Request, res: Response) => {
+export async function deletePayroll(req: Request, res: Response) {
   try {
     const deletedPayroll = await PayrollModel.findByIdAndDelete(req.params.id);
 
@@ -217,4 +212,4 @@ export const deletePayroll = async (req: Request, res: Response) => {
     console.error("Error deleting payroll:", error);
     res.status(500).json({ message: "Failed to delete payroll", error });
   }
-};
+}

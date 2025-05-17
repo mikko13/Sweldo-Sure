@@ -3,9 +3,21 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getUserProfilePicture = exports.updateUserPassword = exports.deleteUser = exports.createUser = exports.getUserById = exports.getAllUsers = exports.toggleUserActiveStatus = exports.updateUser = exports.updateCurrentUser = exports.getCurrentUser = exports.resetPassword = exports.checkEmailExists = exports.getUserByEmail = void 0;
+exports.updateCurrentUser = void 0;
+exports.getUserByEmail = getUserByEmail;
+exports.checkEmailExists = checkEmailExists;
+exports.resetPassword = resetPassword;
+exports.getCurrentUser = getCurrentUser;
+exports.updateUser = updateUser;
+exports.toggleUserActiveStatus = toggleUserActiveStatus;
+exports.getAllUsers = getAllUsers;
+exports.getUserById = getUserById;
+exports.createUser = createUser;
+exports.deleteUser = deleteUser;
+exports.updateUserPassword = updateUserPassword;
+exports.getUserProfilePicture = getUserProfilePicture;
 const User_1 = __importDefault(require("../models/User"));
-const getUserByEmail = async (req, res) => {
+async function getUserByEmail(req, res) {
     try {
         const { email } = req.query;
         if (!email) {
@@ -43,9 +55,8 @@ const getUserByEmail = async (req, res) => {
             error: error instanceof Error ? error.message : error,
         });
     }
-};
-exports.getUserByEmail = getUserByEmail;
-const checkEmailExists = async (req, res) => {
+}
+async function checkEmailExists(req, res) {
     try {
         const { email } = req.query;
         // Check if email is provided
@@ -65,7 +76,6 @@ const checkEmailExists = async (req, res) => {
                 message: "User not found with this email",
             });
         }
-        // User exists - include firstName and lastName in response
         return res.status(200).json({
             success: true,
             exists: true,
@@ -87,9 +97,8 @@ const checkEmailExists = async (req, res) => {
             error: error instanceof Error ? error.message : error,
         });
     }
-};
-exports.checkEmailExists = checkEmailExists;
-const resetPassword = async (req, res) => {
+}
+async function resetPassword(req, res) {
     try {
         const { email, newPassword } = req.body;
         if (!email || !newPassword) {
@@ -109,8 +118,7 @@ const resetPassword = async (req, res) => {
         console.error("Error resetting password:", error);
         return res.status(500).json({ message: "Failed to reset password", error });
     }
-};
-exports.resetPassword = resetPassword;
+}
 const userToResponse = (user) => {
     const userObj = user.toObject();
     const response = {
@@ -131,7 +139,7 @@ const userToResponse = (user) => {
     }
     return response;
 };
-const getCurrentUser = async (req, res) => {
+async function getCurrentUser(req, res) {
     try {
         if (!req.user) {
             return res.status(401).json({ message: "Not authenticated" });
@@ -147,8 +155,7 @@ const getCurrentUser = async (req, res) => {
         console.error("Error fetching current user:", error);
         res.status(500).json({ message: "Server error" });
     }
-};
-exports.getCurrentUser = getCurrentUser;
+}
 const updateCurrentUser = async (req, res) => {
     try {
         const userId = req.user?.id;
@@ -188,7 +195,7 @@ const updateCurrentUser = async (req, res) => {
     }
 };
 exports.updateCurrentUser = updateCurrentUser;
-const updateUser = async (req, res) => {
+async function updateUser(req, res) {
     try {
         const user = await User_1.default.findById(req.params.id);
         if (!user) {
@@ -221,9 +228,8 @@ const updateUser = async (req, res) => {
         console.error("Error updating user:", error);
         res.status(400).json({ message: "Failed to update user", error });
     }
-};
-exports.updateUser = updateUser;
-const toggleUserActiveStatus = async (req, res) => {
+}
+async function toggleUserActiveStatus(req, res) {
     try {
         const user = await User_1.default.findById(req.params.id);
         if (!user) {
@@ -240,9 +246,8 @@ const toggleUserActiveStatus = async (req, res) => {
         console.error("Error toggling user status:", error);
         res.status(500).json({ message: "Failed to update user status", error });
     }
-};
-exports.toggleUserActiveStatus = toggleUserActiveStatus;
-const getAllUsers = async (req, res) => {
+}
+async function getAllUsers(req, res) {
     try {
         const users = await User_1.default.find().sort({ createdAt: -1 });
         const safeUsers = users.map((user) => userToResponse(user));
@@ -252,9 +257,8 @@ const getAllUsers = async (req, res) => {
         console.error("Error fetching users:", error);
         res.status(500).json({ message: "Failed to fetch users", error });
     }
-};
-exports.getAllUsers = getAllUsers;
-const getUserById = async (req, res) => {
+}
+async function getUserById(req, res) {
     try {
         const user = await User_1.default.findById(req.params.id);
         if (!user) {
@@ -274,9 +278,8 @@ const getUserById = async (req, res) => {
         console.error("Error fetching user:", error);
         res.status(500).json({ message: "Failed to fetch user", error });
     }
-};
-exports.getUserById = getUserById;
-const createUser = async (req, res) => {
+}
+async function createUser(req, res) {
     try {
         const userData = {
             firstName: req.body.firstName,
@@ -301,9 +304,8 @@ const createUser = async (req, res) => {
         console.error("Error creating user:", error);
         res.status(400).json({ message: "Failed to create user", error });
     }
-};
-exports.createUser = createUser;
-const deleteUser = async (req, res) => {
+}
+async function deleteUser(req, res) {
     try {
         const deletedUser = await User_1.default.findByIdAndDelete(req.params.id);
         if (!deletedUser) {
@@ -318,9 +320,8 @@ const deleteUser = async (req, res) => {
         console.error("Error deleting user:", error);
         res.status(500).json({ message: "Failed to delete user", error });
     }
-};
-exports.deleteUser = deleteUser;
-const updateUserPassword = async (req, res) => {
+}
+async function updateUserPassword(req, res) {
     try {
         const { currentPassword, newPassword } = req.body;
         const userId = req.params.id;
@@ -340,9 +341,8 @@ const updateUserPassword = async (req, res) => {
         console.error("Error updating password:", error);
         res.status(500).json({ message: "Failed to update password", error });
     }
-};
-exports.updateUserPassword = updateUserPassword;
-const getUserProfilePicture = async (req, res) => {
+}
+async function getUserProfilePicture(req, res) {
     try {
         const user = await User_1.default.findById(req.params.id);
         if (!user || !user.profilePicture || !user.profilePicture.data) {
@@ -357,5 +357,4 @@ const getUserProfilePicture = async (req, res) => {
         console.error("Error fetching profile picture:", error);
         res.status(500).json({ message: "Failed to fetch profile picture", error });
     }
-};
-exports.getUserProfilePicture = getUserProfilePicture;
+}

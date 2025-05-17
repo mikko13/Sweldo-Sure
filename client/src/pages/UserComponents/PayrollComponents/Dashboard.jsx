@@ -19,10 +19,28 @@ function PayrollDashboard() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [isPageLoaded, setIsPageLoaded] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
 
   const filteredPayrolls = useMemo(() => {
-    return payrolls.filter((payroll) => payroll.payPeriod === payPeriod);
-  }, [payrolls, payPeriod]);
+    let filtered = payrolls;
+
+    if (payPeriod !== "All Pay Periods") {
+      filtered = filtered.filter((payroll) => payroll.payPeriod === payPeriod);
+    }
+
+    if (searchQuery.trim() !== "") {
+      const query = searchQuery.toLowerCase();
+      filtered = filtered.filter((payroll) => {
+        return (
+          payroll.name?.toLowerCase().includes(query) ||
+          payroll.payPeriod?.toLowerCase().includes(query) ||
+          payroll.status?.toLowerCase().includes(query)
+        );
+      });
+    }
+
+    return filtered;
+  }, [payrolls, payPeriod, searchQuery]);
 
   useEffect(() => {
     async function fetchPayrolls() {
@@ -67,7 +85,7 @@ function PayrollDashboard() {
 
   useEffect(() => {
     setCurrentPage(1);
-  }, [payPeriod]);
+  }, [payPeriod, searchQuery]);
 
   function handleCheckboxChange(id) {
     setPayrolls(
@@ -99,6 +117,7 @@ function PayrollDashboard() {
     }
   }
 
+  // Calculate metrics based on filtered payrolls
   const totalNetPay = filteredPayrolls.reduce(
     (sum, emp) => sum + (emp.netPay || 0),
     0
@@ -207,10 +226,13 @@ function PayrollDashboard() {
             totalRegularWage={totalRegularWage}
             totalProcessedPayroll={totalProcessedPayroll}
             payPeriod={payPeriod}
+            searchActive={searchQuery.trim() !== ""}
           />
           <ActionsComponent
             payrolls={filteredPayrolls}
             selectedPayPeriod={payPeriod}
+            searchQuery={searchQuery}
+            setSearchQuery={setSearchQuery}
             displayedPayrolls={filteredPayrolls.slice(
               (currentPage - 1) * itemsPerPage,
               currentPage * itemsPerPage
@@ -227,6 +249,8 @@ function PayrollDashboard() {
             currentPage={currentPage}
             setCurrentPage={setCurrentPage}
             selectedPayPeriod={payPeriod}
+            searchQuery={searchQuery}
+            filteredPayrolls={filteredPayrolls}
           />
         </div>
       </div>

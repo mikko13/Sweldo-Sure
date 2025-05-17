@@ -5,7 +5,7 @@ import UserModel, {
   IProfilePictureResponse,
 } from "../models/User";
 
-export const getUserByEmail = async (req: Request, res: Response) => {
+export async function getUserByEmail(req: Request, res: Response) {
   try {
     const { email } = req.query;
 
@@ -46,9 +46,9 @@ export const getUserByEmail = async (req: Request, res: Response) => {
       error: error instanceof Error ? error.message : error,
     });
   }
-};
+}
 
-export const checkEmailExists = async (req: Request, res: Response) => {
+export async function checkEmailExists(req: Request, res: Response) {
   try {
     const { email } = req.query;
 
@@ -72,7 +72,6 @@ export const checkEmailExists = async (req: Request, res: Response) => {
       });
     }
 
-    // User exists - include firstName and lastName in response
     return res.status(200).json({
       success: true,
       exists: true,
@@ -93,9 +92,9 @@ export const checkEmailExists = async (req: Request, res: Response) => {
       error: error instanceof Error ? error.message : error,
     });
   }
-};
+}
 
-export const resetPassword = async (req: Request, res: Response) => {
+export async function resetPassword(req: Request, res: Response) {
   try {
     const { email, newPassword } = req.body;
 
@@ -119,7 +118,7 @@ export const resetPassword = async (req: Request, res: Response) => {
     console.error("Error resetting password:", error);
     return res.status(500).json({ message: "Failed to reset password", error });
   }
-};
+}
 
 const userToResponse = (user: IUser): IUserResponse => {
   const userObj = user.toObject();
@@ -144,7 +143,7 @@ const userToResponse = (user: IUser): IUserResponse => {
   return response;
 };
 
-export const getCurrentUser = async (req: Request, res: Response) => {
+export async function getCurrentUser(req: Request, res: Response) {
   try {
     if (!req.user) {
       return res.status(401).json({ message: "Not authenticated" });
@@ -162,7 +161,7 @@ export const getCurrentUser = async (req: Request, res: Response) => {
     console.error("Error fetching current user:", error);
     res.status(500).json({ message: "Server error" });
   }
-};
+}
 
 export const updateCurrentUser = async (
   req: Request & { file?: Express.Multer.File },
@@ -205,10 +204,10 @@ export const updateCurrentUser = async (
   }
 };
 
-export const updateUser = async (
+export async function updateUser(
   req: Request & { file?: Express.Multer.File },
   res: Response
-) => {
+) {
   try {
     const user = await UserModel.findById(req.params.id);
     if (!user) {
@@ -239,9 +238,9 @@ export const updateUser = async (
     console.error("Error updating user:", error);
     res.status(400).json({ message: "Failed to update user", error });
   }
-};
+}
 
-export const toggleUserActiveStatus = async (req: Request, res: Response) => {
+export async function toggleUserActiveStatus(req: Request, res: Response) {
   try {
     const user = await UserModel.findById(req.params.id);
 
@@ -262,9 +261,9 @@ export const toggleUserActiveStatus = async (req: Request, res: Response) => {
     console.error("Error toggling user status:", error);
     res.status(500).json({ message: "Failed to update user status", error });
   }
-};
+}
 
-export const getAllUsers = async (req: Request, res: Response) => {
+export async function getAllUsers(req: Request, res: Response) {
   try {
     const users = await UserModel.find().sort({ createdAt: -1 });
 
@@ -275,9 +274,9 @@ export const getAllUsers = async (req: Request, res: Response) => {
     console.error("Error fetching users:", error);
     res.status(500).json({ message: "Failed to fetch users", error });
   }
-};
+}
 
-export const getUserById = async (req: Request, res: Response) => {
+export async function getUserById(req: Request, res: Response) {
   try {
     const user = await UserModel.findById(req.params.id);
 
@@ -302,12 +301,12 @@ export const getUserById = async (req: Request, res: Response) => {
     console.error("Error fetching user:", error);
     res.status(500).json({ message: "Failed to fetch user", error });
   }
-};
+}
 
-export const createUser = async (
+export async function createUser(
   req: Request & { file?: Express.Multer.File },
   res: Response
-) => {
+) {
   try {
     const userData: Partial<IUser> = {
       firstName: req.body.firstName,
@@ -334,9 +333,9 @@ export const createUser = async (
     console.error("Error creating user:", error);
     res.status(400).json({ message: "Failed to create user", error });
   }
-};
+}
 
-export const deleteUser = async (req: Request, res: Response) => {
+export async function deleteUser(req: Request, res: Response) {
   try {
     const deletedUser = await UserModel.findByIdAndDelete(req.params.id);
 
@@ -352,9 +351,9 @@ export const deleteUser = async (req: Request, res: Response) => {
     console.error("Error deleting user:", error);
     res.status(500).json({ message: "Failed to delete user", error });
   }
-};
+}
 
-export const updateUserPassword = async (req: Request, res: Response) => {
+export async function updateUserPassword(req: Request, res: Response) {
   try {
     const { currentPassword, newPassword } = req.body;
     const userId = req.params.id;
@@ -377,9 +376,9 @@ export const updateUserPassword = async (req: Request, res: Response) => {
     console.error("Error updating password:", error);
     res.status(500).json({ message: "Failed to update password", error });
   }
-};
+}
 
-export const getUserProfilePicture = async (req: Request, res: Response) => {
+export async function getUserProfilePicture(req: Request, res: Response) {
   try {
     const user = await UserModel.findById(req.params.id);
 
@@ -396,4 +395,4 @@ export const getUserProfilePicture = async (req: Request, res: Response) => {
     console.error("Error fetching profile picture:", error);
     res.status(500).json({ message: "Failed to fetch profile picture", error });
   }
-};
+}

@@ -1,4 +1,3 @@
-//authRoutes.ts
 import express from "express";
 import {
   login,

@@ -3,10 +3,15 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deletePayroll = exports.updatePayroll = exports.calculateThirteenthMonthPay = exports.createPayroll = exports.getPayrollById = exports.getAllPayrolls = void 0;
+exports.getAllPayrolls = getAllPayrolls;
+exports.getPayrollById = getPayrollById;
+exports.createPayroll = createPayroll;
+exports.calculateThirteenthMonthPay = calculateThirteenthMonthPay;
+exports.updatePayroll = updatePayroll;
+exports.deletePayroll = deletePayroll;
 const Payroll_1 = __importDefault(require("../models/Payroll"));
 const axios_1 = __importDefault(require("axios"));
-const getAllPayrolls = async (req, res) => {
+async function getAllPayrolls(req, res) {
     try {
         const payrolls = await Payroll_1.default.find().sort({ createdAt: -1 });
         res.status(200).json(payrolls);
@@ -15,9 +20,8 @@ const getAllPayrolls = async (req, res) => {
         console.error("Error fetching payrolls:", error);
         res.status(500).json({ message: "Failed to fetch payrolls", error });
     }
-};
-exports.getAllPayrolls = getAllPayrolls;
-const getPayrollById = async (req, res) => {
+}
+async function getPayrollById(req, res) {
     try {
         const payroll = await Payroll_1.default.findById(req.params.id);
         if (!payroll) {
@@ -29,9 +33,8 @@ const getPayrollById = async (req, res) => {
         console.error("Error fetching payroll:", error);
         res.status(500).json({ message: "Failed to fetch payroll", error });
     }
-};
-exports.getPayrollById = getPayrollById;
-const createPayroll = async (req, res) => {
+}
+async function createPayroll(req, res) {
     try {
         const totalRegularWage = Number(((req.body.numberOfRegularHours || 0) * (req.body.hourlyRate || 0)).toFixed(2));
         const regularNightDifferential = (req.body.regularNightDifferential || 0) * 8.06;
@@ -67,15 +70,12 @@ const createPayroll = async (req, res) => {
         console.error("Error creating payroll:", error);
         res.status(400).json({ message: "Failed to create payroll", error });
     }
-};
-exports.createPayroll = createPayroll;
-const calculateThirteenthMonthPay = async (req, res) => {
+}
+async function calculateThirteenthMonthPay(req, res) {
     try {
         const { employeeId, year } = req.params;
-        // Get the employee name (assuming you have an endpoint to fetch employee details)
         const employeeResponse = await axios_1.default.get(`https://sweldo-sure-server.onrender.com/api/employees/${employeeId}`);
         const employeeName = `${employeeResponse.data.lastName}, ${employeeResponse.data.firstName}`;
-        // Fetch all payroll records for this employee in the specified year
         const payrolls = await Payroll_1.default.find({
             name: employeeName,
             payPeriod: { $regex: year },
@@ -106,9 +106,8 @@ const calculateThirteenthMonthPay = async (req, res) => {
             message: "Failed to calculate 13th month pay",
         });
     }
-};
-exports.calculateThirteenthMonthPay = calculateThirteenthMonthPay;
-const updatePayroll = async (req, res) => {
+}
+async function updatePayroll(req, res) {
     try {
         const totalRegularWage = Number(((req.body.numberOfRegularHours || 0) * (req.body.hourlyRate || 0)).toFixed(2));
         const regularNightDifferential = (req.body.regularNightDifferential || 0) * 8.06;
@@ -146,9 +145,8 @@ const updatePayroll = async (req, res) => {
         console.error("Error updating payroll:", error);
         res.status(400).json({ message: "Failed to update payroll", error });
     }
-};
-exports.updatePayroll = updatePayroll;
-const deletePayroll = async (req, res) => {
+}
+async function deletePayroll(req, res) {
     try {
         const deletedPayroll = await Payroll_1.default.findByIdAndDelete(req.params.id);
         if (!deletedPayroll) {
@@ -163,5 +161,4 @@ const deletePayroll = async (req, res) => {
         console.error("Error deleting payroll:", error);
         res.status(500).json({ message: "Failed to delete payroll", error });
     }
-};
-exports.deletePayroll = deletePayroll;
+}

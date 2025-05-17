@@ -25,6 +25,7 @@ function PayrollTable({
   currentPage,
   setCurrentPage,
   selectedPayPeriod,
+  searchTerm, // Add searchTerm parameter
 }) {
   const navigate = useNavigate();
   const [payrollToDelete, setPayrollToDelete] = useState(null);
@@ -33,13 +34,34 @@ function PayrollTable({
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
 
   const filteredPayrolls = useMemo(() => {
-    if (selectedPayPeriod === "All Pay Periods") {
-      return payrolls;
+    let filtered = payrolls;
+
+    // First filter by pay period
+    if (selectedPayPeriod !== "All Pay Periods") {
+      filtered = filtered.filter(
+        (payroll) => payroll.payPeriod === selectedPayPeriod
+      );
     }
-    return payrolls.filter(
-      (payroll) => payroll.payPeriod === selectedPayPeriod
-    );
-  }, [payrolls, selectedPayPeriod]);
+
+    // Then filter by search term if it exists
+    if (searchTerm && searchTerm.trim() !== "") {
+      const lowerCaseSearch = searchTerm.toLowerCase();
+      filtered = filtered.filter((payroll) => {
+        return (
+          // Search in common text fields
+          payroll.name?.toLowerCase().includes(lowerCaseSearch) ||
+          payroll.payPeriod?.toLowerCase().includes(lowerCaseSearch) ||
+          payroll.status?.toLowerCase().includes(lowerCaseSearch) ||
+          // Search in numeric fields (convert to string first)
+          String(payroll.netPay).includes(searchTerm) ||
+          String(payroll.totalAmount).includes(searchTerm) ||
+          String(payroll.totalRegularWage).includes(searchTerm)
+        );
+      });
+    }
+
+    return filtered;
+  }, [payrolls, selectedPayPeriod, searchTerm]);
 
   const displayedPayrolls = useMemo(() => {
     const startIndex = (currentPage - 1) * itemsPerPage;
@@ -87,7 +109,7 @@ function PayrollTable({
 
   useEffect(() => {
     setCurrentPage(1);
-  }, [selectedPayPeriod, setCurrentPage]);
+  }, [selectedPayPeriod, searchTerm, setCurrentPage]); // Add searchTerm to useEffect dependencies
 
   const nightDifferentialAmount = (payroll) =>
     payroll.regularNightDifferential * 8.06;
@@ -98,21 +120,21 @@ function PayrollTable({
 
   const overtimeAmount = (payroll) => payroll.overtime * 100.78;
 
-  const handleDeleteClick = (payroll) => {
+  function handleDeleteClick(payroll) {
     setPayrollToDelete(payroll);
     setIsDeleteDialogOpen(true);
-  };
+  }
 
-  const handleViewClick = (payroll) => {
+  function handleViewClick(payroll) {
     setViewPayroll(payroll);
     setIsViewModalOpen(true);
-  };
+  }
 
-  const handleEditClick = (payroll) => {
+  function handleEditClick(payroll) {
     navigate("/admin-payroll/update-payroll/" + payroll._id || payroll.id, {
       state: { payroll },
     });
-  };
+  }
 
   async function handleDeletePayroll() {
     if (!payrollToDelete) return;
@@ -152,8 +174,19 @@ function PayrollTable({
         <div className="overflow-x-auto">
           {filteredPayrolls.length === 0 ? (
             <div className="p-8 text-center text-gray-500">
-              No payroll records found for the selected pay period:{" "}
-              {selectedPayPeriod}
+              {searchTerm ? (
+                <div>
+                  <p>
+                    No payroll records found for the search term:{" "}
+                    <span className="font-medium">"{searchTerm}"</span>
+                  </p>
+                </div>
+              ) : (
+                <div>
+                  No payroll records found for the selected pay period:{" "}
+                  {selectedPayPeriod}
+                </div>
+              )}
             </div>
           ) : (
             <table className="w-full relative">
@@ -191,7 +224,7 @@ function PayrollTable({
               <tbody>
                 {displayedPayrolls.map((payroll) => (
                   <tr
-                    key={payroll.id}
+                    key={payroll._id || payroll.id}
                     className="border-b border-blue-50 hover:bg-blue-50 transition-all duration-200 animate-fadeIn"
                   >
                     <td className="p-3">

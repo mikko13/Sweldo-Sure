@@ -1,14 +1,34 @@
 import { useState, useEffect } from "react";
-import { Search, Filter, Plus, X } from "lucide-react";
+import { Search, Filter, Plus, X, XCircle } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import PayslipGenerator from "./PayslipGeneratorComponents/PayslipGenerator";
 import PayrollExcelGenerator from "./PayrollExcelGeneratorComponents/PayrollExcelGenerator";
 import { Toaster } from "sonner";
 
-function Actions({ payrolls = [], selectedPayPeriod = "All Pay Periods" }) {
+function Actions({
+  payrolls = [],
+  selectedPayPeriod = "All Pay Periods",
+  searchQuery = "",
+  setSearchQuery = () => {},
+}) {
   const [mobileActionsOpen, setMobileActionsOpen] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
   const navigate = useNavigate();
+
+  const [inputValue, setInputValue] = useState(searchQuery);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setSearchQuery(inputValue);
+    }, 300);
+
+    return () => clearTimeout(timer);
+  }, [inputValue, setSearchQuery]);
+
+  function handleClearSearch() {
+    setInputValue("");
+    setSearchQuery("");
+  }
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -81,8 +101,11 @@ function Actions({ payrolls = [], selectedPayPeriod = "All Pay Periods" }) {
               <input
                 type="text"
                 placeholder="Search records..."
-                className="bg-white text-gray-800 px-3 py-2 rounded-md text-sm w-64 focus:outline-none focus:ring-2 focus:ring-blue-500 border border-blue-200 transition-all duration-200"
+                className="bg-white text-gray-800 px-3 py-2 pl-3 pr-8 rounded-md text-sm w-64 focus:outline-none focus:ring-2 focus:ring-blue-500 border border-blue-200 transition-all duration-200"
+                value={inputValue}
+                onChange={(e) => setInputValue(e.target.value)}
               />
+
               <Search
                 size={16}
                 className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400"
@@ -105,8 +128,18 @@ function Actions({ payrolls = [], selectedPayPeriod = "All Pay Periods" }) {
               <input
                 type="text"
                 placeholder="Search..."
-                className="bg-white text-gray-800 px-3 py-2 rounded-md text-sm w-full focus:outline-none focus:ring-2 focus:ring-blue-500 border border-blue-200 transition-all duration-200"
+                className="bg-white text-gray-800 px-3 py-2 pl-3 pr-8 rounded-md text-sm w-full focus:outline-none focus:ring-2 focus:ring-blue-500 border border-blue-200 transition-all duration-200"
+                value={inputValue}
+                onChange={(e) => setInputValue(e.target.value)}
               />
+              {inputValue ? (
+                <button
+                  onClick={handleClearSearch}
+                  className="absolute right-8 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
+                >
+                  <XCircle size={14} />
+                </button>
+              ) : null}
               <Search
                 size={16}
                 className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400"

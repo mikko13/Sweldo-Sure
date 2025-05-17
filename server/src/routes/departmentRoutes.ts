@@ -1,4 +1,3 @@
-// src/routes/departmentRoutes.ts
 import express from "express";
 import {
   getAllDepartments,

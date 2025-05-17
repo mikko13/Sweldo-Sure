@@ -25,21 +25,14 @@ function PayrollTable({
   currentPage,
   setCurrentPage,
   selectedPayPeriod,
+  searchQuery,
+  filteredPayrolls,
 }) {
   const navigate = useNavigate();
   const [payrollToDelete, setPayrollToDelete] = useState(null);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [viewPayroll, setViewPayroll] = useState(null);
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
-
-  const filteredPayrolls = useMemo(() => {
-    if (selectedPayPeriod === "All Pay Periods") {
-      return payrolls;
-    }
-    return payrolls.filter(
-      (payroll) => payroll.payPeriod === selectedPayPeriod
-    );
-  }, [payrolls, selectedPayPeriod]);
 
   const displayedPayrolls = useMemo(() => {
     const startIndex = (currentPage - 1) * itemsPerPage;
@@ -87,7 +80,7 @@ function PayrollTable({
 
   useEffect(() => {
     setCurrentPage(1);
-  }, [selectedPayPeriod, setCurrentPage]);
+  }, [selectedPayPeriod, searchQuery, setCurrentPage]);
 
   const nightDifferentialAmount = (payroll) =>
     payroll.regularNightDifferential * 8.06;
@@ -152,8 +145,17 @@ function PayrollTable({
         <div className="overflow-x-auto">
           {filteredPayrolls.length === 0 ? (
             <div className="p-8 text-center text-gray-500">
-              No payroll records found for the selected pay period:{" "}
-              {selectedPayPeriod}
+              {searchQuery ? (
+                <>
+                  No payroll records found matching{" "}
+                  <strong>"{searchQuery}"</strong>
+                </>
+              ) : (
+                <>
+                  No payroll records found for the selected pay period:{" "}
+                  {selectedPayPeriod}
+                </>
+              )}
             </div>
           ) : (
             <table className="w-full relative">
@@ -191,7 +193,7 @@ function PayrollTable({
               <tbody>
                 {displayedPayrolls.map((payroll) => (
                   <tr
-                    key={payroll.id}
+                    key={payroll.id || payroll._id}
                     className="border-b border-blue-50 hover:bg-blue-50 transition-all duration-200 animate-fadeIn"
                   >
                     <td className="p-3">
@@ -273,12 +275,17 @@ function PayrollTable({
                         >
                           <Edit size={16} />
                         </button>
+                        <button
+                          className="p-1.5 bg-red-50 hover:bg-red-100 rounded-md text-gray-600 hover:text-red-700 transition-all duration-200 cursor-pointer"
+                          onClick={() => handleDeleteClick(payroll)}
+                        >
+                          <Trash size={16} />
+                        </button>
                       </div>
                     </td>
                   </tr>
                 ))}
 
-                {/* Totals Row */}
                 <tr className="border-t-2 border-blue-200 bg-blue-50 font-medium text-blue-800">
                   <td className="p-3" colSpan={2}>
                     <div className="text-sm font-bold">TOTAL</div>

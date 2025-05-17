@@ -5,7 +5,7 @@ const emailjs = require("@emailjs/nodejs");
 import crypto from "crypto";
 import config from "../config";
 
-export const login = async (req: Request, res: Response) => {
+export async function login(req: Request, res: Response) {
   try {
     const { email, password } = req.body;
 
@@ -15,34 +15,28 @@ export const login = async (req: Request, res: Response) => {
       return res.status(401).json({ message: "Invalid email or password" });
     }
 
-    // Check if user is active
     if (!user.isActive) {
-      return res
-        .status(403)
-        .json({
-          message: "Account is deactivated. Please contact administrator.",
-        });
+      return res.status(403).json({
+        message: "Account is deactivated. Please contact administrator.",
+      });
     }
 
-    // Compare passwords
     const isPasswordMatch = await user.comparePassword(password);
 
     if (!isPasswordMatch) {
       return res.status(401).json({ message: "Invalid email or password" });
     }
 
-    // Generate JWT token
     const token = jwt.sign(
       {
         id: user._id,
         email: user.email,
-        role: user.role, // Include role in the token
+        role: user.role,
       },
       config.JWT_SECRET as string,
       { expiresIn: "24h" }
     );
 
-    // Return token and user info (including role)
     res.status(200).json({
       token,
       user: {
@@ -58,15 +52,13 @@ export const login = async (req: Request, res: Response) => {
     console.error("Login error:", error);
     res.status(500).json({ message: "Server error during login" });
   }
-};
+}
 
-export const logout = (req: Request, res: Response) => {
-  // JWT is stateless, so we don't need to do anything server-side
-  // The client will remove the token
+export async function logout(req: Request, res: Response) {
   res.status(200).json({ message: "Logged out successfully" });
-};
+}
 
-export const getCurrentUser = async (req: Request, res: Response) => {
+export async function getCurrentUser(req: Request, res: Response) {
   try {
     // @ts-ignore - We'll add user property through middleware
     const userId = req.user.id;
@@ -88,4 +80,4 @@ export const getCurrentUser = async (req: Request, res: Response) => {
     console.error("Error fetching current user:", error);
     res.status(500).json({ message: "Server error" });
   }
-};
+}

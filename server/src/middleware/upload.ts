@@ -2,11 +2,11 @@ import multer from "multer";
 
 const storage = multer.memoryStorage(); 
 
-const fileFilter = (
+function fileFilter (
   req: Express.Request,
   file: Express.Multer.File,
   cb: multer.FileFilterCallback
-) => {
+)  {
   if (file.mimetype.startsWith("image/")) {
     cb(null, true);
   } else {

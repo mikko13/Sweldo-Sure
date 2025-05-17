@@ -109,18 +109,6 @@ function EmployeeActions({
     },
   ];
 
-  function resetFilters() {
-    setFilters({
-      department: "",
-      position: "",
-      status: "",
-      remarks: "",
-    });
-    setSearchQuery("");
-    setFilteredEmployees(employees);
-    setFilterDropdownOpen(false);
-  }
-
   function generatePDF() {
     try {
       const doc = new jsPDF("landscape");
@@ -347,15 +335,7 @@ function EmployeeActions({
               transition: "opacity 500ms ease-out, transform 500ms ease-out",
               transitionDelay: "400ms",
             }}
-          >
-            <button
-              onClick={() => setFilterDropdownOpen(!filterDropdownOpen)}
-              className="p-2 rounded-md bg-white hover:bg-blue-50 border border-blue-200 flex items-center transition-all duration-200"
-            >
-              <Filter size={16} className="text-gray-400 mr-1" />
-              <ChevronDown size={14} className="text-gray-400" />
-            </button>
-          </div>
+          ></div>
         </div>
       </div>
 
@@ -392,15 +372,7 @@ function EmployeeActions({
                 transition: "opacity 500ms ease-out, transform 500ms ease-out",
                 transitionDelay: "400ms",
               }}
-            >
-              <button
-                onClick={() => setFilterDropdownOpen(!filterDropdownOpen)}
-                className="p-2 rounded-md bg-white hover:bg-blue-50 border border-blue-200 flex items-center transition-all duration-200"
-              >
-                <Filter size={16} className="text-gray-400 mr-1" />
-                <ChevronDown size={14} className="text-gray-400" />
-              </button>
-            </div>
+            ></div>
             <button
               onClick={() => setMobileActionsOpen(!mobileActionsOpen)}
               className="p-2 rounded-md bg-gradient-to-r from-blue-700 to-blue-800 text-white transition-all duration-200"
