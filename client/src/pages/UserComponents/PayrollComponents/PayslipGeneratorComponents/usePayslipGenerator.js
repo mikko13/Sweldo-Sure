@@ -1,4 +1,3 @@
-import { SetStateAction } from "react";
 import * as XLSX from "xlsx-js-style";
 import { toast } from "sonner";
 
@@ -271,7 +270,7 @@ function applyCellStyle(worksheet, row, col, value, style) {
   worksheet[cellAddress].s = style;
 }
 
-function applyNumericStyles(worksheet) {
+function applyNumericStyles(worksheet, currentRow, payroll) {
   if (payroll.hourlyRate) {
     applyCellStyle(worksheet, currentRow + 3, 2, payroll.hourlyRate, {
       font: { name: "Abadi", sz: 9 },
@@ -349,7 +348,7 @@ function applyNumericStyles(worksheet) {
   }
 
   const overtimeCell = XLSX.utils.encode_cell({ r: currentRow + 7, c: 2 });
-  if (worksheet[overtimeCell] && worksheet[nightDiffRateCell].v) {
+  if (worksheet[overtimeCell] && worksheet[overtimeCell].v) {
     worksheet[overtimeCell].s = {
       font: { name: "Abadi", sz: 9 },
       alignment: { vertical: "center", horizontal: "right" },
