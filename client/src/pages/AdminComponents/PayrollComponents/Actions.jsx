@@ -143,29 +143,6 @@ function Actions({ payrolls = [], onSearch }) {
                   Create Payroll Record
                 </button>
               </div>
-              <div
-                style={{
-                  animation: "slideDown 300ms ease forwards",
-                  animationDelay: "100ms",
-                  opacity: 0,
-                  transform: "translateY(-20px)",
-                }}
-              >
-                <button className="bg-white hover:bg-blue-50 text-gray-800 px-3 py-2 rounded-md text-sm flex items-center transition-colors duration-200 border border-blue-200 w-full">
-                  <Table size={16} className="mr-2" />
-                  Generate Payroll
-                </button>
-              </div>
-              <div
-                style={{
-                  animation: "slideDown 300ms ease forwards",
-                  animationDelay: "200ms",
-                  opacity: 0,
-                  transform: "translateY(-20px)",
-                }}
-              >
-                <PayslipGenerator payrolls={payrolls} />
-              </div>
             </div>
           )}
         </div>

@@ -39,8 +39,7 @@ function ProfileTab({ formData, handleChange, handleSubmit }) {
           setPreviewUrl(
             "https://sweldo-sure-server.onrender.com/api/users/" +
               response.data._id +
-              "/" +
-              "profile-picture" +
+              "/profile-picture?" +
               Date.now()
           );
         }
@@ -443,7 +442,6 @@ function ProfileTab({ formData, handleChange, handleSubmit }) {
           }
         }
 
-        /* Add responsive adjustments */
         @media (max-width: 640px) {
           .max-w-4xl {
             max-width: 95%;

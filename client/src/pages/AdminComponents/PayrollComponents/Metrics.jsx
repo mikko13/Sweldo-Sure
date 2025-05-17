@@ -49,7 +49,7 @@ function MetricsComponent({
     const steps = 30;
     const stepTime = duration / steps;
 
-    const current = 0;
+    let current = 0;
     const increment = totalRegularWage / steps;
 
     const timer = setInterval(() => {
