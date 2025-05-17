@@ -217,7 +217,7 @@ function PayrollTable({
                       ₱{nightDifferentialAmount(payroll).toLocaleString()}
                     </td>
                     <td className="p-3 text-sm text-gray-800">
-                      ₱{payroll.prorated13thMonthPay.toLocaleString()}
+                      ₱{payroll.prorated13thMonthPay}
                     </td>
                     <td className="p-3 text-sm text-gray-800">
                       ₱{specialHolidayAmount(payroll).toLocaleString()}

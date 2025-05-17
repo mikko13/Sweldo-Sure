@@ -16,7 +16,7 @@ function CreateEmployeeForm({ onSubmit, onCancel }) {
   const navigate = useNavigate();
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [error, setError] = (useState < string) | (null > null);
+  const [error, setError] = useState(null);
   const [departments, setDepartments] = useState([]);
   const [positions, setPositions] = useState([]);
   const [isLoading, setIsLoading] = useState(true);

@@ -24,7 +24,7 @@ function DepartmentsTab({
   const [editName, setEditName] = useState("");
   const [isToggling, setIsToggling] = useState({});
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-  const [departmentToDelete, setDepartmentToDelete] = useState > null;
+  const [departmentToDelete, setDepartmentToDelete] = useState(null);
 
   function startEditing(department) {
     setEditingId(department._id);
