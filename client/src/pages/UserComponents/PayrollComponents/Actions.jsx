@@ -148,18 +148,6 @@ function Actions({
 
             <div className="flex items-center space-x-2">
               <button
-                className="p-2 rounded-md bg-white hover:bg-blue-50 transition-all duration-200 border border-blue-200"
-                style={{
-                  opacity: isVisible ? 1 : 0,
-                  transform: isVisible ? "translateY(0)" : "translateY(5px)",
-                  transition:
-                    "opacity 500ms ease-out, transform 500ms ease-out",
-                  transitionDelay: "400ms",
-                }}
-              >
-                <Filter size={16} className="text-gray-400" />
-              </button>
-              <button
                 onClick={() => setMobileActionsOpen(!mobileActionsOpen)}
                 className="p-2 rounded-md bg-gradient-to-r from-blue-700 to-blue-800 text-white transition-all duration-200"
                 style={{
