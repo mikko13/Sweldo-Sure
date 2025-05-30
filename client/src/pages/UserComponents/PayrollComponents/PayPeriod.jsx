@@ -8,21 +8,16 @@ function PayPeriodComponent({ payPeriod, setPayPeriod }) {
   );
   const [isVisible, setIsVisible] = useState(false);
 
-  function getNextPayPeriod(date) {
+  function getCurrentPayPeriod(date) {
     const month = date.toLocaleString("default", { month: "long" });
     const year = date.getFullYear();
     const day = date.getDate();
 
     if (day >= 1 && day <= 15) {
+      return month + " 1-15, " + year;
+    } else {
       const lastDay = new Date(year, date.getMonth() + 1, 0).getDate();
       return month + " 16-" + lastDay + ", " + year;
-    } else {
-      const nextMonth = new Date(year, date.getMonth() + 1, 1);
-      const nextMonthName = nextMonth.toLocaleString("default", {
-        month: "long",
-      });
-      const nextMonthYear = nextMonth.getFullYear();
-      return nextMonthName + " 1-15, " + nextMonthYear;
     }
   }
 
@@ -34,9 +29,10 @@ function PayPeriodComponent({ payPeriod, setPayPeriod }) {
     for (let year = currentYear; year <= 2030; year++) {
       for (let month = 0; month < 12; month++) {
         const firstPeriod = new Date(year, month, 15);
-        const firstPeriodString = `${firstPeriod.toLocaleString("default", {
-          month: "long",
-        })} 1-15, ${firstPeriod.getFullYear()}`;
+        const firstPeriodString =
+          firstPeriod.toLocaleString("default", { month: "long" }) +
+          " 1-15, " +
+          firstPeriod.getFullYear();
         periods.push(firstPeriodString);
 
         const secondPeriod = new Date(
@@ -44,9 +40,12 @@ function PayPeriodComponent({ payPeriod, setPayPeriod }) {
           month,
           getLastDayOfMonth(new Date(year, month, 1))
         );
-        const secondPeriodString = `${secondPeriod.toLocaleString("default", {
-          month: "long",
-        })} 16-${secondPeriod.getDate()}, ${secondPeriod.getFullYear()}`;
+        const secondPeriodString =
+          secondPeriod.toLocaleString("default", { month: "long" }) +
+          " 16-" +
+          secondPeriod.getDate() +
+          ", " +
+          secondPeriod.getFullYear();
         periods.push(secondPeriodString);
       }
     }
@@ -68,8 +67,8 @@ function PayPeriodComponent({ payPeriod, setPayPeriod }) {
     setPayPeriods(periods);
     setLastGeneratedYear(2030);
 
-    const nextPayPeriod = getNextPayPeriod(currentDate);
-    setPayPeriod(nextPayPeriod);
+    const currentPayPeriod = getCurrentPayPeriod(currentDate);
+    setPayPeriod(currentPayPeriod);
   }
 
   function getLastDayOfMonth(date) {
@@ -81,10 +80,10 @@ function PayPeriodComponent({ payPeriod, setPayPeriod }) {
 
     const updatePayPeriodInterval = setInterval(() => {
       const currentDate = new Date();
-      const nextPayPeriod = getNextPayPeriod(currentDate);
+      const currentPayPeriod = getCurrentPayPeriod(currentDate);
 
-      if (payPeriod !== nextPayPeriod) {
-        setPayPeriod(nextPayPeriod);
+      if (payPeriod !== currentPayPeriod) {
+        setPayPeriod(currentPayPeriod);
       }
     }, 24 * 60 * 60 * 1000);
 
