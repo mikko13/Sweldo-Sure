@@ -11,36 +11,41 @@ function usePayslipGenerator(payrolls, setIsGenerating) {
     setIsGenerating(true);
 
     try {
-      const { workbook, worksheet } = createWorkbookAndWorksheet();
+      const workbook = XLSX.utils.book_new();
       const today = getCurrentDate();
       const formattedDate = formatDate(today);
 
-      let currentRow = 0;
-      const merges = [];
+      // Process payrolls in chunks of 5
+      const payslipsPerSheet = 5;
+      const totalSheets = Math.ceil(payrolls.length / payslipsPerSheet);
 
-      payrolls.forEach((payroll) => {
-        const payslipData = createPayslipData(payroll, formattedDate);
+      for (let sheetIndex = 0; sheetIndex < totalSheets; sheetIndex++) {
+        const startIndex = sheetIndex * payslipsPerSheet;
+        const endIndex = Math.min(
+          startIndex + payslipsPerSheet,
+          payrolls.length
+        );
+        const sheetPayrolls = payrolls.slice(startIndex, endIndex);
 
-        const payrollMerges = calculateMerges(currentRow);
-        merges.push(...payrollMerges);
+        const { worksheet, merges } = createSheetWithPayslips(
+          sheetPayrolls,
+          formattedDate
+        );
+        worksheet["!merges"] = merges;
 
-        XLSX.utils.sheet_add_aoa(worksheet, payslipData, {
-          origin: `A${currentRow + 1}`,
-        });
-
-        applyStylesForPayroll(worksheet, currentRow, payroll, formattedDate);
-
-        currentRow += payslipData.length;
-      });
-
-      worksheet["!merges"] = merges;
-
-      XLSX.utils.book_append_sheet(workbook, worksheet, "Payslips");
+        const sheetName =
+          totalSheets > 1 ? `Payslips_${sheetIndex + 1}` : "Payslips";
+        XLSX.utils.book_append_sheet(workbook, worksheet, sheetName);
+      }
 
       const dateStr = formatDateForFilename(today);
       XLSX.writeFile(workbook, "Payslips_" + dateStr + ".xlsx");
 
-      toast.success("Payslips generated successfully!");
+      toast.success(
+        `Payslips generated successfully! (${
+          payrolls.length
+        } payslips across ${totalSheets} sheet${totalSheets > 1 ? "s" : ""})`
+      );
     } catch (error) {
       console.error("Error generating payslips:", error);
       toast.error(
@@ -54,10 +59,10 @@ function usePayslipGenerator(payrolls, setIsGenerating) {
   return { generateAllPayslips };
 }
 
-function createWorkbookAndWorksheet() {
-  const workbook = XLSX.utils.book_new();
+function createSheetWithPayslips(payrolls, formattedDate) {
   const worksheet = XLSX.utils.aoa_to_sheet([]);
 
+  // Set column widths
   const columnWidths = [
     { wch: 8.33 },
     { wch: 8.11 },
@@ -73,7 +78,50 @@ function createWorkbookAndWorksheet() {
   ];
   worksheet["!cols"] = columnWidths;
 
-  return { workbook, worksheet };
+  // Set page setup for legal paper and no scaling
+  worksheet["!pageSetup"] = {
+    paperSize: 5, // Legal paper (8.5" x 14")
+    scale: 100, // No scaling (100%)
+    fitToWidth: false,
+    fitToHeight: false,
+    orientation: "portrait",
+    horizontalDpi: 300,
+    verticalDpi: 300,
+  };
+
+  // Set print area and margins for legal paper
+  worksheet["!margins"] = {
+    left: 0.7,
+    right: 0.7,
+    top: 0.75,
+    bottom: 0.75,
+    header: 0.3,
+    footer: 0.3,
+  };
+
+  let currentRow = 0;
+  const allMerges = [];
+
+  payrolls.forEach((payroll, index) => {
+    // Add some spacing between payslips (except for the first one)
+    if (index > 0) {
+      currentRow += 2; // Add 2 empty rows between payslips
+    }
+
+    const payslipData = createPayslipData(payroll, formattedDate);
+    const payrollMerges = calculateMerges(currentRow);
+    allMerges.push(...payrollMerges);
+
+    XLSX.utils.sheet_add_aoa(worksheet, payslipData, {
+      origin: `A${currentRow + 1}`,
+    });
+
+    applyStylesForPayroll(worksheet, currentRow, payroll, formattedDate);
+
+    currentRow += payslipData.length;
+  });
+
+  return { worksheet, merges: allMerges };
 }
 
 function getCurrentDate() {
@@ -104,12 +152,13 @@ function formatCurrency(value) {
     : "";
 }
 
-function createPayslipData(payroll) {
+function createPayslipData(payroll, formattedDate) {
   const calculatedRegularHoliday = payroll.regularHoliday * 161.25;
   const calculatedSpecialHoliday = payroll.specialHoliday * 104.81;
   const calculatedRegularNightDifferential =
     payroll.regularNightDifferential * 8.06;
   const calculatedOvertime = payroll.overtime * 100.78;
+
   return [
     [
       "G.L.S. MANPOWER SERVICES",
@@ -119,7 +168,7 @@ function createPayslipData(payroll) {
       "",
       "",
       "",
-      payroll.payPeriod,
+      formattedDate,
       "",
       "",
       "",
@@ -260,7 +309,6 @@ function applyStylesForPayroll(worksheet, currentRow, payroll, formattedDate) {
   });
 
   applyNumericStyles(worksheet, currentRow, payroll);
-
   applyBorderStyles(worksheet, currentRow);
 }
 
