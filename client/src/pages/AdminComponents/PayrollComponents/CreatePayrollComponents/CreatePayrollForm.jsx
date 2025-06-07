@@ -59,7 +59,14 @@ function CreatePayrollForm({ onSubmit }) {
         const response = await axios.get(
           "https://sweldo-sure-server.onrender.com/api/employees"
         );
-        setEmployees(response.data);
+        const sortedEmployees = response.data.sort((a, b) => {
+          const lastNameComparison = a.lastName.localeCompare(b.lastName);
+          if (lastNameComparison !== 0) {
+            return lastNameComparison;
+          }
+          return a.firstName.localeCompare(b.firstName);
+        });
+        setEmployees(sortedEmployees);
       } catch (err) {
         console.error("Error fetching employees:", err);
         setError("Failed to load employees");

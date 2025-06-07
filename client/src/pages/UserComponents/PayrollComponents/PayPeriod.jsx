@@ -8,16 +8,21 @@ function PayPeriodComponent({ payPeriod, setPayPeriod }) {
   );
   const [isVisible, setIsVisible] = useState(false);
 
-  function getCurrentPayPeriod(date) {
+  function getPreviousPayPeriod(date) {
     const month = date.toLocaleString("default", { month: "long" });
     const year = date.getFullYear();
     const day = date.getDate();
 
     if (day >= 1 && day <= 15) {
-      return month + " 1-15, " + year;
+      const prevMonth = new Date(year, date.getMonth() - 1, 1);
+      const prevMonthName = prevMonth.toLocaleString("default", {
+        month: "long",
+      });
+      const prevYear = prevMonth.getFullYear();
+      const lastDay = new Date(prevYear, prevMonth.getMonth() + 1, 0).getDate();
+      return prevMonthName + " 16-" + lastDay + ", " + prevYear;
     } else {
-      const lastDay = new Date(year, date.getMonth() + 1, 0).getDate();
-      return month + " 16-" + lastDay + ", " + year;
+      return month + " 1-15, " + year;
     }
   }
 
@@ -67,8 +72,8 @@ function PayPeriodComponent({ payPeriod, setPayPeriod }) {
     setPayPeriods(periods);
     setLastGeneratedYear(2030);
 
-    const currentPayPeriod = getCurrentPayPeriod(currentDate);
-    setPayPeriod(currentPayPeriod);
+    const previousPayPeriod = getPreviousPayPeriod(currentDate);
+    setPayPeriod(previousPayPeriod);
   }
 
   function getLastDayOfMonth(date) {
@@ -80,10 +85,10 @@ function PayPeriodComponent({ payPeriod, setPayPeriod }) {
 
     const updatePayPeriodInterval = setInterval(() => {
       const currentDate = new Date();
-      const currentPayPeriod = getCurrentPayPeriod(currentDate);
+      const previousPayPeriod = getPreviousPayPeriod(currentDate);
 
-      if (payPeriod !== currentPayPeriod) {
-        setPayPeriod(currentPayPeriod);
+      if (payPeriod !== previousPayPeriod) {
+        setPayPeriod(previousPayPeriod);
       }
     }, 24 * 60 * 60 * 1000);
 
