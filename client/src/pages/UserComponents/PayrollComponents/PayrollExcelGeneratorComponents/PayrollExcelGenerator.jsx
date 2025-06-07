@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Table, Download } from "lucide-react";
+import { Download } from "lucide-react";
 import * as XLSX from "xlsx";
 import { toast } from "sonner";
 
@@ -39,86 +39,140 @@ function PayrollExcelGenerator({
 
       const wb = XLSX.utils.book_new();
 
-      const detailedPayrollData = [];
+      // Sheet1 - Main Payroll Sheet
+      const payrollData = [];
 
-      detailedPayrollData.push(Array(17).fill(null));
-      detailedPayrollData[0][7] = "PAYROLL FOR THE PERIOD " + selectedPayPeriod;
+      // Add empty row
+      payrollData.push(Array(19).fill(null));
 
-      const headers = [
+      // Add title row
+      const titleRow = Array(19).fill(null);
+      titleRow[0] = "PAYROLL FOR THE PERIOD " + selectedPayPeriod;
+      payrollData.push(titleRow);
+
+      // Add header rows
+      const headerRow1 = Array(19).fill(null);
+      headerRow1[5] = 8.06;
+      headerRow1[6] = "PRO RATED";
+      headerRow1[7] = "SPCL";
+      headerRow1[8] = "REGULAR";
+      headerRow1[9] = "service";
+      headerRow1[10] = "OVERTIME";
+      headerRow1[11] = "TOTAL";
+      headerRow1[16] = "NET PAY";
+      headerRow1[17] = "SIGNATURE";
+      payrollData.push(headerRow1);
+
+      const headerRow2 = [
         "Name of Employee",
-        "No. of REG. HOURS",
-        "HOURLY Rate",
-        "Total Regular Wage",
-        "REG. NIGHT DIFF",
-        "PRO RATED 13TH MONTH PAY",
-        "SPCL HOLIDAY 104.81",
-        "REGULAR HOLIDAY 161.25",
-        "service incentive leave",
-        "OVERTIME DEC 1-15",
-        "TOTAL AMOUNT",
-        "hdmf loan",
+        "No. of",
+        "HOURLY",
+        "Total",
+        "SPCL",
+        "REG. NIGHT",
+        "13TH MONTH",
+        "HOLIDAY",
+        "HOLIDAY",
+        "incentive",
+        "DEC 1-15",
+        "AMOUNT",
+        "",
         "SSS",
         "PHIC",
         "HDMF",
-        "NET PAY",
+        "",
+        "",
+        "",
       ];
+      payrollData.push(headerRow2);
 
-      detailedPayrollData.push(Array(17).fill(null));
-      headers.forEach((header, index) => {
-        detailedPayrollData[1][index] = header;
-      });
+      const headerRow3 = [
+        "",
+        "REG. HOURS",
+        "Rate",
+        "Regular Wage",
+        "HOLIDAY",
+        "DIFF",
+        "PAY",
+        "104.81",
+        "161.25",
+        "leave",
+        "",
+        "",
+        "hdmf",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+      ];
+      payrollData.push(headerRow3);
 
+      const headerRow4 = Array(19).fill(null);
+      headerRow4[12] = "loan";
+      payrollData.push(headerRow4);
+
+      // Add employee data
       filteredPayrolls.forEach((payroll) => {
-        const row = [
-          payroll.name,
-          payroll.numberOfRegularHours,
-          payroll.hourlyRate,
-          payroll.totalRegularWage,
-          nightDifferentialAmount(payroll),
-          payroll.prorated13thMonthPay,
-          specialHolidayAmount(payroll),
-          regularHolidayAmount(payroll),
-          payroll.serviceIncentiveLeave,
-          overtimeAmount(payroll),
-          payroll.totalAmount,
-          payroll.hdmfLoans,
-          payroll.sss,
-          payroll.phic,
-          payroll.hdmf,
-          payroll.netPay,
-        ];
-
-        detailedPayrollData.push(row);
+        const row = Array(19).fill(null);
+        row[0] = payroll.name;
+        row[1] = payroll.numberOfRegularHours;
+        row[2] = payroll.hourlyRate;
+        row[3] = payroll.totalRegularWage;
+        row[5] = nightDifferentialAmount(payroll);
+        row[6] = payroll.prorated13thMonthPay;
+        row[7] = specialHolidayAmount(payroll);
+        row[8] = regularHolidayAmount(payroll);
+        row[9] = payroll.serviceIncentiveLeave;
+        row[10] = overtimeAmount(payroll);
+        row[11] = payroll.totalAmount;
+        row[13] = payroll.sss;
+        row[14] = payroll.phic;
+        row[15] = payroll.hdmf;
+        row[16] = payroll.netPay;
+        payrollData.push(row);
       });
 
-      const ws = XLSX.utils.aoa_to_sheet(detailedPayrollData);
+      // Add total row
+      const totalRow = Array(19).fill(null);
+      totalRow[18] = { f: `=SUM(Q7:Q${6 + filteredPayrolls.length})` };
+      payrollData.push(totalRow);
 
-      ws["!merges"] = [{ s: { r: 0, c: 7 }, e: { r: 0, c: 9 } }];
+      const ws = XLSX.utils.aoa_to_sheet(payrollData);
+
+      // Apply styling and formatting
+      ws["!merges"] = [
+        { s: { r: 1, c: 0 }, e: { r: 1, c: 2 } }, // Title merge
+      ];
 
       ws["!cols"] = [
-        { wch: 20 },
-        { wch: 12 },
-        { wch: 12 },
-        { wch: 15 },
-        { wch: 15 },
-        { wch: 15 },
-        { wch: 15 },
-        { wch: 15 },
-        { wch: 15 },
-        { wch: 15 },
-        { wch: 15 },
-        { wch: 12 },
-        { wch: 12 },
-        { wch: 12 },
-        { wch: 12 },
-        { wch: 15 },
+        { wch: 20 }, // A - Name
+        { wch: 10 }, // B - No. of Reg Hours
+        { wch: 10 }, // C - Hourly Rate
+        { wch: 15 }, // D - Total Regular Wage
+        { wch: 10 }, // E - SPCL HOLIDAY
+        { wch: 10 }, // F - REG. NIGHT DIFF
+        { wch: 12 }, // G - 13TH MONTH PAY
+        { wch: 12 }, // H - HOLIDAY 104.81
+        { wch: 12 }, // I - HOLIDAY 161.25
+        { wch: 12 }, // J - service incentive leave
+        { wch: 12 }, // K - OVERTIME DEC 1-15
+        { wch: 12 }, // L - TOTAL AMOUNT
+        { wch: 10 }, // M - hdmf loan
+        { wch: 10 }, // N - SSS
+        { wch: 10 }, // O - PHIC
+        { wch: 10 }, // P - HDMF
+        { wch: 12 }, // Q - NET PAY
+        { wch: 15 }, // R - SIGNATURE
+        { wch: 10 }, // S - (total)
       ];
 
+      // Format numeric columns
       const numericCols = [
         "B",
         "C",
         "D",
-        "E",
         "F",
         "G",
         "H",
@@ -126,16 +180,16 @@ function PayrollExcelGenerator({
         "J",
         "K",
         "L",
-        "M",
         "N",
         "O",
         "P",
+        "Q",
       ];
       const currencyFormat = "₱#,##0.00";
-      const lastRow = detailedPayrollData.length;
+      const lastRow = payrollData.length;
 
       numericCols.forEach((col) => {
-        for (let i = 3; i <= lastRow; i++) {
+        for (let i = 5; i <= lastRow; i++) {
           const cellRef = col + i;
           if (!ws[cellRef]) continue;
 
@@ -147,122 +201,63 @@ function PayrollExcelGenerator({
         }
       });
 
-      for (let i = 0; i < headers.length; i++) {
-        const cellRef = XLSX.utils.encode_cell({ r: 1, c: i });
-        if (!ws[cellRef]) continue;
-        ws[cellRef].s = { font: { bold: true } };
-      }
-
-      const titleCell = XLSX.utils.encode_cell({ r: 0, c: 7 });
+      // Format title
+      const titleCell = "A2";
       if (ws[titleCell]) {
         ws[titleCell].s = { font: { bold: true, sz: 14 } };
       }
 
+      // Format headers
+      for (let r = 2; r <= 4; r++) {
+        for (let c = 0; c < 19; c++) {
+          const cellRef = XLSX.utils.encode_cell({ r, c });
+          if (ws[cellRef]) {
+            ws[cellRef].s = { font: { bold: true } };
+          }
+        }
+      }
+
+      // Sheet2 - Summary Sheet (matching the example format)
       const summaryData = [];
 
-      summaryData.push(["COMPANY PAYROLL SUMMARY"]);
-      summaryData.push(["Pay Period:", selectedPayPeriod]);
-      summaryData.push(["Generated on:", new Date().toLocaleDateString()]);
-      summaryData.push([]);
+      // Add empty rows
+      summaryData.push(Array(4).fill(null));
+      summaryData.push(Array(4).fill(null));
+      summaryData.push(Array(4).fill(null));
+      summaryData.push(Array(4).fill(null));
 
-      const totalRegularWage = filteredPayrolls.reduce(
-        (sum, p) => sum + p.totalRegularWage,
-        0
-      );
-      const totalNightDiff = filteredPayrolls.reduce(
-        (sum, p) => sum + nightDifferentialAmount(p),
-        0
-      );
-      const total13thMonth = filteredPayrolls.reduce(
-        (sum, p) => sum + p.prorated13thMonthPay,
-        0
-      );
-      const totalSpecialHoliday = filteredPayrolls.reduce(
-        (sum, p) => sum + specialHolidayAmount(p),
-        0
-      );
-      const totalRegularHoliday = filteredPayrolls.reduce(
-        (sum, p) => sum + regularHolidayAmount(p),
-        0
-      );
-      const totalSIL = filteredPayrolls.reduce(
-        (sum, p) => sum + p.serviceIncentiveLeave,
-        0
-      );
-      const totalOvertime = filteredPayrolls.reduce(
-        (sum, p) => sum + overtimeAmount(p),
-        0
-      );
-      const totalGross = filteredPayrolls.reduce(
-        (sum, p) => sum + p.totalAmount,
-        0
-      );
-      const totalHDMF = filteredPayrolls.reduce((sum, p) => sum + p.hdmf, 0);
-      const totalHDMFLoans = filteredPayrolls.reduce(
-        (sum, p) => sum + p.hdmfLoans,
-        0
-      );
-      const totalSSS = filteredPayrolls.reduce((sum, p) => sum + p.sss, 0);
-      const totalPHIC = filteredPayrolls.reduce((sum, p) => sum + p.phic, 0);
-      const totalDeductions = totalHDMF + totalHDMFLoans + totalSSS + totalPHIC;
-      const totalNetPay = filteredPayrolls.reduce(
-        (sum, p) => sum + p.netPay,
-        0
-      );
+      // Add employee summary data
+      filteredPayrolls.forEach((payroll) => {
+        const row = Array(4).fill(null);
+        row[0] = payroll.name.toLowerCase();
+        row[2] = payroll.hourlyRate;
+        row[3] = {
+          f: `+C${summaryData.length + 1}*B${summaryData.length + 1}`,
+        };
+        summaryData.push(row);
+      });
 
-      summaryData.push(["SUMMARY OF EARNINGS"]);
-      summaryData.push(["Regular Wages:", totalRegularWage]);
-      summaryData.push(["Night Differential:", totalNightDiff]);
-      summaryData.push(["13th Month Pay:", total13thMonth]);
-      summaryData.push(["Special Holiday Pay:", totalSpecialHoliday]);
-      summaryData.push(["Regular Holiday Pay:", totalRegularHoliday]);
-      summaryData.push(["Service Incentive Leave:", totalSIL]);
-      summaryData.push(["Overtime Pay:", totalOvertime]);
-      summaryData.push(["GROSS PAY:", totalGross]);
-      summaryData.push([]);
-
-      summaryData.push(["SUMMARY OF DEDUCTIONS"]);
-      summaryData.push(["HDMF:", totalHDMF]);
-      summaryData.push(["HDMF Loans:", totalHDMFLoans]);
-      summaryData.push(["SSS:", totalSSS]);
-      summaryData.push(["PHIC:", totalPHIC]);
-      summaryData.push(["TOTAL DEDUCTIONS:", totalDeductions]);
-      summaryData.push([]);
-
-      summaryData.push(["NET PAY TOTAL:", totalNetPay]);
-      summaryData.push(["Number of Employees:", filteredPayrolls.length]);
+      // Add total row
+      const summaryTotalRow = Array(4).fill(null);
+      summaryTotalRow[3] = { f: `=SUM(D5:D${4 + filteredPayrolls.length})` };
+      summaryData.push(summaryTotalRow);
 
       const summaryWs = XLSX.utils.aoa_to_sheet(summaryData);
 
-      summaryWs["!cols"] = [{ wch: 25 }, { wch: 15 }];
+      // Sheet3 - Empty sheet
+      const emptyWs = XLSX.utils.aoa_to_sheet([[]]);
 
-      for (let i = 6; i <= 13; i++) {
-        const cellRef = `B${i}`;
-        if (summaryWs[cellRef]) {
-          summaryWs[cellRef].z = currencyFormat;
-        }
-      }
-
-      for (let i = 16; i <= 20; i++) {
-        const cellRef = `B${i}`;
-        if (summaryWs[cellRef]) {
-          summaryWs[cellRef].z = currencyFormat;
-        }
-      }
-
-      if (summaryWs["B22"]) {
-        summaryWs["B22"].z = currencyFormat;
-      }
-
-      XLSX.utils.book_append_sheet(wb, ws, "Payroll Details");
-      XLSX.utils.book_append_sheet(wb, summaryWs, "Summary");
+      // Add sheets to workbook
+      XLSX.utils.book_append_sheet(wb, ws, "Sheet1");
+      XLSX.utils.book_append_sheet(wb, summaryWs, "Sheet2");
+      XLSX.utils.book_append_sheet(wb, emptyWs, "Sheet3");
 
       const periodFormatted =
         selectedPayPeriod === "All Pay Periods"
           ? "All_Periods"
           : selectedPayPeriod.replace(/\s+/g, "_").replace(/,/g, "");
 
-      const fileName = "Payroll_" + periodFormatted + ".xlsx";
+      const fileName = "PAYROLL_" + periodFormatted + ".xlsx";
 
       XLSX.writeFile(wb, fileName);
 
