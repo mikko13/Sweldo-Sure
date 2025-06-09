@@ -268,16 +268,16 @@ function PayrollTable({
                       ₱{payroll.totalAmount.toLocaleString()}
                     </td>
                     <td className="p-3 text-sm text-gray-800">
-                      ₱{payroll.hdmf.toLocaleString()}
+                      ₱{payroll.hdmf}
                     </td>
                     <td className="p-3 text-sm text-gray-800">
-                      ₱{payroll.hdmfLoans.toLocaleString()}
+                      ₱{payroll.hdmfLoans}
                     </td>
                     <td className="p-3 text-sm text-gray-800">
-                      ₱{payroll.sss.toLocaleString()}
+                      ₱{payroll.sss}
                     </td>
                     <td className="p-3 text-sm text-gray-800">
-                      ₱{payroll.phic.toLocaleString()}
+                      ₱{payroll.phic}
                     </td>
                     <td className="p-3 text-sm text-gray-800">
                       ₱{payroll.netPay.toLocaleString()}
