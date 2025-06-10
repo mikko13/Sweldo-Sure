@@ -237,7 +237,7 @@ function PayrollTable({
                       ₱{payroll.totalAmount.toLocaleString()}
                     </td>
                     <td className="p-3 text-sm text-gray-800">
-                      ₱{payroll.hdmf.toLocaleString()}
+                      ₱{payroll.hdmf}
                     </td>
                     <td className="p-3 text-sm text-gray-800">
                       ₱{payroll.hdmfLoans}
